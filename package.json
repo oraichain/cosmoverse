@@ -1,0 +1,30 @@
+{
+  "name": "root",
+  "private": "true",
+  "version": "1.0.11",
+  "scripts": {
+    "simulate": "node src/simulate.mjs"
+  },
+  "dependencies": {
+    "@cosmjs/amino": "^0.31.0",
+    "@cosmjs/cosmwasm-stargate": "^0.31.0",
+    "@cosmjs/crypto": "^0.31.0",
+    "@cosmjs/proto-signing": "^0.31.0",
+    "@cosmjs/stargate": "^0.31.0",
+    "ethers": "^5.0.15",
+    "@oraichain/common-contracts-sdk": "^1.0.30",
+    "@oraichain/common-contracts-build": "^1.0.27",
+    "@oraichain/oraidex-contracts-build": "^1.0.12",
+    "@oraichain/oraidex-contracts-sdk": "^1.0.10",
+    "dotenv": "^16.0.3"
+  },
+  "devDependencies": {
+    "@oraichain/cw-simulate": "^2.8.62",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^18.15.8",
+    "jest": "^29.5.0",
+    "esbuild": "^0.19.3",
+    "esbuild-jest": "^0.5.0",
+    "typescript": "^5.2.2"
+  }
+}
