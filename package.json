@@ -14,8 +14,8 @@
     "ethers": "^5.0.15",
     "@oraichain/common-contracts-sdk": "^1.0.30",
     "@oraichain/common-contracts-build": "^1.0.27",
-    "@oraichain/oraidex-contracts-build": "^1.0.12",
-    "@oraichain/oraidex-contracts-sdk": "^1.0.10",
+    "@oraichain/oraidex-contracts-build": "^1.0.14",
+    "@oraichain/oraidex-contracts-sdk": "^1.0.22",
     "dotenv": "^16.0.3"
   },
   "devDependencies": {
