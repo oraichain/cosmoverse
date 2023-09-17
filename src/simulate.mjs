@@ -58,4 +58,5 @@ const client = new SimulateCosmWasmClient({
     ]
   });
   console.dir(ret, { depth: null });
+  console.log(process.memoryUsage().rss >> 16, "MB");
 })();
