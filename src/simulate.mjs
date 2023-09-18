@@ -43,7 +43,6 @@ const client = new SimulateCosmWasmClient({
   console.log(await client.queryContractSmart(storages.implementation, { offering: { get_offerings: { limit: 1 } } }));
 
   const orderbookContract = new OraiswapLimitOrderClient(client, senderAddress, storages.orderbook);
-  const start = performance.now();
   const ret = await orderbookContract.orders({
     filter: { bidder: "orai1g4s5qdw54wdj6ggukfdr59j4uv82asczunxpj7" },
     assetInfos: [
