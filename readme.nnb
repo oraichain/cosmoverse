@@ -1,0 +1,70 @@
+{
+    "cells": [
+        {
+            "language": "markdown",
+            "source": [
+                "## Step by step how to play with cosmwasm simulation tools"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "shellscript",
+            "source": [
+                "## add cw-simulate module\nyarn add @oraichain/cw-simulate -D"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "### Import cw-simulate module and create new instance"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "\nimport { SimulateCosmWasmClient } from \"@oraichain/cw-simulate\";\nconst senderAddress = \"orai14vcw5qk0tdvknpa38wz46js5g7vrvut8lk0lk6\";\nconst client = new SimulateCosmWasmClient({\n  chainId: \"Oraichain\",\n  bech32Prefix: \"orai\"\n});\n"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "### Load smart contract with state from running blockchain"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "import { DownloadState } from \"@oraichain/cw-simulate\";\nimport { Cw20BaseClient} from \"@oraichain/common-contracts-sdk\";\nimport path from \"path\";\n\nconst downloadState = new DownloadState('https://lcd.orai.io', path.join(__dirname, \"src/data\"));\nawait downloadState.loadState(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\", \"kwt token\");\nconst kwtContract = new Cw20BaseClient(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\");\n\nawait kwtContract.allAccounts({})"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "text/plain",
+                            "value": [
+                                "{",
+                                "  accounts: [",
+                                "    \u001b[32m'orai1q9l6nvn5g3gnllft3shwepz6wln3zww8axlx9d'\u001b[39m,",
+                                "    \u001b[32m'orai1qxts5avx4cr55fm6mfz4xdtrq446wqxpn3fy08'\u001b[39m,",
+                                "    \u001b[32m'orai1qfuc8va6y79qt8yckzyxvc5d7j8lxdnj40ha9k'\u001b[39m,",
+                                "    \u001b[32m'orai1q2adfmdxejrzepk6srnxjg6gnj45s660p0ljqn'\u001b[39m,",
+                                "    \u001b[32m'orai1qt3s05k29d3qla398dg90x8226asejfewknj2g'\u001b[39m,",
+                                "    \u001b[32m'orai1qt5jnkqnrn7mx9qhq5jgrghrqxjrsxrqpkyl9f'\u001b[39m,",
+                                "    \u001b[32m'orai1qv5jn7tueeqw7xqdn5rem7s09n7zletrsnc5vq'\u001b[39m,",
+                                "    \u001b[32m'orai1qjsyj0ujhnrgxux6txvhpeww06ywj3d67xktjd'\u001b[39m,",
+                                "    \u001b[32m'orai1qhf0we0fsyzczljvyct59ajzy745afdwhearkx'\u001b[39m,",
+                                "    \u001b[32m'orai1qc2pncm0a7px7m963erj7xjvjxzykze5u9sdt7'\u001b[39m",
+                                "  ]",
+                                "}"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
