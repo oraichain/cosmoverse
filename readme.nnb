@@ -31,9 +31,37 @@
         {
             "language": "javascript",
             "source": [
-                "\nimport { SimulateCosmWasmClient } from \"@oraichain/cw-simulate\";\nconst senderAddress = \"orai14vcw5qk0tdvknpa38wz46js5g7vrvut8lk0lk6\";\nconst client = new SimulateCosmWasmClient({\n  chainId: \"Oraichain\",\n  bech32Prefix: \"orai\"\n});\n"
+                "\nimport { SimulateCosmWasmClient } from \"@oraichain/cw-simulate\";\nconst senderAddress = \"orai14vcw5qk0tdvknpa38wz46js5g7vrvut8lk0lk6\";\nconst client = new SimulateCosmWasmClient({\n  chainId: \"Oraichain\",\n  bech32Prefix: \"orai\",\n  metering: true\n});\n"
             ],
             "outputs": []
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "### Setup account balance then transfer"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "import { coins } from \"@cosmjs/stargate\";\nclient.app.bank.setBalance(senderAddress, coins('10000000', 'orai'));\n\nawait client.getBalance(senderAddress, 'orai')"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "text/plain",
+                            "value": [
+                                "{",
+                                "  amount: \u001b[32m'10000000'\u001b[39m,",
+                                "  denom: \u001b[32m'orai'\u001b[39m",
+                                "}"
+                            ]
+                        }
+                    ]
+                }
+            ]
         },
         {
             "language": "markdown",
@@ -45,7 +73,7 @@
         {
             "language": "javascript",
             "source": [
-                "import { Cw20BaseClient } from \"@oraichain/common-contracts-sdk\";\nimport * as commonArtifacts from \"@oraichain/common-contracts-build\";\nimport fs from \"fs\";\n\nconst { codeId } = await client.upload(senderAddress, fs.readFileSync(commonArtifacts.getContractDir(\"cw20-base\")), \"auto\");\nconst { contractAddress } = await client.instantiate(senderAddress, codeId, {\n    decimals: 6,\n    symbol: \"CVT\",\n    name: \"cosmoverse token\",\n    mint: { minter: senderAddress },\n    initial_balances: [{ address: senderAddress, amount: \"1000000000\" }] \n});\n\nconst cw20Contract = new Cw20BaseClient(client, senderAddress, contractAddress);\n\nawait cw20Contract.tokenInfo()"
+                "import { Cw20BaseClient } from \"@oraichain/common-contracts-sdk\";\nimport * as commonArtifacts from \"@oraichain/common-contracts-build\";\nimport fs from \"fs\";\n\nconst { codeId } = await client.upload(senderAddress, fs.readFileSync(commonArtifacts.getContractDir(\"cw20-base\")), \"auto\");\nconst { contractAddress, gasUsed } = await client.instantiate(senderAddress, codeId, {\n    decimals: 6,\n    symbol: \"CVT\",\n    name: \"cosmoverse token\",\n    mint: { minter: senderAddress },\n    initial_balances: [{ address: senderAddress, amount: \"1000000000\" }] \n});\nconst cw20Contract = new Cw20BaseClient(client, senderAddress, contractAddress);\n\nawait cw20Contract.tokenInfo()\n"
             ],
             "outputs": [
                 {
@@ -68,6 +96,51 @@
         {
             "language": "markdown",
             "source": [
+                "### Console.log in smart contract\n\n1. run `code ../cw-plus/contracts/cw20-base` to add log function\n1. run `cwtools build ../cw-plus/contracts/cw20-base -w -o node_modules/@oraichain/common-contracts-build/data/` to override wasm contract file\n1. re-run notebook above to see the log\n"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "### Execute contract with gas metering"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "import { Cw20BaseClient } from \"@oraichain/common-contracts-sdk\";\nconst cw20Contract = new Cw20BaseClient(client, senderAddress, contractAddress);\nconst { gasUsed } = await cw20Contract.transfer({amount: '1000000', recipient: 'orai1ur2vsjrjarygawpdwtqteaazfchvw4fg6uql76'});\nconsole.log(`Transfer token required gas: ${gasUsed}`);\n\nawait cw20Contract.balance({address:'orai1ur2vsjrjarygawpdwtqteaazfchvw4fg6uql76'})\n"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "Transfer token required gas: 58618",
+                                ""
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "mime": "text/plain",
+                            "value": [
+                                "{",
+                                "  balance: \u001b[32m'2000000'\u001b[39m",
+                                "}"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "markdown",
+            "source": [
                 "### Load smart contract with state from running blockchain"
             ],
             "outputs": []
@@ -75,7 +148,7 @@
         {
             "language": "javascript",
             "source": [
-                "import { DownloadState } from \"@oraichain/cw-simulate\";\nimport { Cw20BaseClient} from \"@oraichain/common-contracts-sdk\";\nimport path from \"path\";\n\nconst downloadState = new DownloadState('https://lcd.orai.io', path.join(__dirname, \"src/data\"));\nawait downloadState.loadState(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\", \"kwt token\");\nconst cw20Contract = new Cw20BaseClient(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\");\n\nawait cw20Contract.allAccounts({})"
+                "import { DownloadState } from \"@oraichain/cw-simulate\";\nimport { Cw20BaseClient} from \"@oraichain/common-contracts-sdk\";\nimport path from \"path\";\n\nconst downloadState = new DownloadState('https://lcd.orai.io', path.join(__dirname, \"src/data\"));\nawait downloadState.loadState(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\", \"kwt token\");\nconst cw20Contract = new Cw20BaseClient(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\");\n\nawait cw20Contract.allAccounts({limit:5})"
             ],
             "outputs": [
                 {
@@ -89,12 +162,7 @@
                                 "    \u001b[32m'orai1qxts5avx4cr55fm6mfz4xdtrq446wqxpn3fy08'\u001b[39m,",
                                 "    \u001b[32m'orai1qfuc8va6y79qt8yckzyxvc5d7j8lxdnj40ha9k'\u001b[39m,",
                                 "    \u001b[32m'orai1q2adfmdxejrzepk6srnxjg6gnj45s660p0ljqn'\u001b[39m,",
-                                "    \u001b[32m'orai1qt3s05k29d3qla398dg90x8226asejfewknj2g'\u001b[39m,",
-                                "    \u001b[32m'orai1qt5jnkqnrn7mx9qhq5jgrghrqxjrsxrqpkyl9f'\u001b[39m,",
-                                "    \u001b[32m'orai1qv5jn7tueeqw7xqdn5rem7s09n7zletrsnc5vq'\u001b[39m,",
-                                "    \u001b[32m'orai1qjsyj0ujhnrgxux6txvhpeww06ywj3d67xktjd'\u001b[39m,",
-                                "    \u001b[32m'orai1qhf0we0fsyzczljvyct59ajzy745afdwhearkx'\u001b[39m,",
-                                "    \u001b[32m'orai1qc2pncm0a7px7m963erj7xjvjxzykze5u9sdt7'\u001b[39m",
+                                "    \u001b[32m'orai1qt3s05k29d3qla398dg90x8226asejfewknj2g'\u001b[39m",
                                 "  ]",
                                 "}"
                             ]
