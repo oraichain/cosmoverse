@@ -148,22 +148,59 @@
         {
             "language": "javascript",
             "source": [
-                "import { CWSimulateApp } from \"@oraichain/cw-simulate\";\n\nconst cosmosChain = new CWSimulateApp({\n    chainId: \"cosmoshub-4\",\n    bech32Prefix: \"cosmos\"\n});\n\n// relay message between Cosmos Hub and Oraichain\ncosmosChain.ibc.relay(\"channel-0\", \"transfer\", \"channel-0\", \"transfer\", client.app);\n\n// mint ibc/orai on cosmos hub and burn orai on oraichain\nawait client.app.ibc.sendTransfer({\n    channelId: \"channel-0\",\n    receiver: \"cosmos1ur2vsjrjarygawpdwtqteaazfchvw4fgf0kulf\",\n    token: { amount: \"1000000\", denom: \"orai\" },\n    sender: senderAddress\n});\n\n// show balance on both chains\nconsole.log(\n    client.app.bank.getBalance(senderAddress),\n    cosmosChain.bank.getBalance(\"cosmos1ur2vsjrjarygawpdwtqteaazfchvw4fgf0kulf\")\n);\n\n// mint orai on oraichain and burn ibc/orai on cosmos hub\nawait cosmosChain.ibc.sendTransfer({\n    channelId: \"channel-0\",\n    receiver: senderAddress,\n    token: { amount: \"1000000\", denom: \"ibc/56c280c7163a5e37ea987d3fa195ea719b7b7c7d319615afaa17cba5a347cec4\" },\n    sender: \"cosmos1ur2vsjrjarygawpdwtqteaazfchvw4fgf0kulf\"\n});\n\n// show balance on both chains\nconsole.log(\n    client.app.bank.getBalance(senderAddress),\n    cosmosChain.bank.getBalance(\"cosmos1ur2vsjrjarygawpdwtqteaazfchvw4fgf0kulf\")\n);\n"
+                "import { CWSimulateApp } from \"@oraichain/cw-simulate\";\n\nconst cosmosChain = new CWSimulateApp({\n    chainId: \"cosmoshub-4\",\n    bech32Prefix: \"cosmos\"\n});\n\n// relay message between Cosmos Hub and Oraichain\ncosmosChain.ibc.relay(\"channel-0\", \"transfer\", \"channel-0\", \"transfer\", client.app);\n"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "### Send Orai token from Oraichain to Cosmos Hub"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "// mint ibc/orai on cosmos hub and burn orai on oraichain\nawait client.app.ibc.sendTransfer({\n    channelId: \"channel-0\",\n    receiver: \"cosmos1ur2vsjrjarygawpdwtqteaazfchvw4fgf0kulf\",\n    token: { amount: \"1000000\", denom: \"orai\" },\n    sender: senderAddress\n});\n\ncosmosChain.bank.getBalance(\"cosmos1ur2vsjrjarygawpdwtqteaazfchvw4fgf0kulf\")"
             ],
             "outputs": [
                 {
                     "items": [
                         {
-                            "mime": "application/vnd.code.notebook.stdout",
+                            "mime": "text/plain",
                             "value": [
-                                "[ { denom: 'orai', amount: '9000000' } ] [",
+                                "[",
                                 "  {",
-                                "    denom: 'ibc/56c280c7163a5e37ea987d3fa195ea719b7b7c7d319615afaa17cba5a347cec4',",
-                                "    amount: '1000000'",
+                                "    denom: \u001b[32m'ibc/56c280c7163a5e37ea987d3fa195ea719b7b7c7d319615afaa17cba5a347cec4'\u001b[39m,",
+                                "    amount: \u001b[32m'1000000'\u001b[39m",
                                 "  }",
-                                "]",
-                                "[ { denom: 'orai', amount: '10000000' } ] []",
-                                ""
+                                "]"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "### Send back IBC Orai from Cosmos Hub to Oraichain"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "// mint orai on oraichain and burn ibc/orai on cosmos hub\nawait cosmosChain.ibc.sendTransfer({\n    channelId: \"channel-0\",\n    receiver: senderAddress,\n    token: { amount: \"1000000\", denom: \"ibc/56c280c7163a5e37ea987d3fa195ea719b7b7c7d319615afaa17cba5a347cec4\" },\n    sender: \"cosmos1ur2vsjrjarygawpdwtqteaazfchvw4fgf0kulf\"\n});\n\ncosmosChain.bank.getBalance(\"cosmos1ur2vsjrjarygawpdwtqteaazfchvw4fgf0kulf\")"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "text/plain",
+                            "value": [
+                                "[]"
                             ]
                         }
                     ]
