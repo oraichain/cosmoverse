@@ -8,155 +8,18 @@
             "outputs": []
         },
         {
-            "language": "shellscript",
-            "source": [
-                "## add cw-simulate module\nyarn add @oraichain/cw-simulate -D"
-            ],
-            "outputs": []
-        },
-        {
             "language": "markdown",
             "source": [
-                "### Run test"
+                "### add cw-simulate module"
             ],
             "outputs": []
         },
         {
             "language": "shellscript",
             "source": [
-                "npx jest"
-            ],
-            "outputs": [
-                {
-                    "items": [
-                        {
-                            "mime": "application/vnd.code.notebook.stderr",
-                            "value": [
-                                "PASS src/tests/orderbook.spec.ts",
-                                "  ● Console",
-                                "",
-                                "    console.log",
-                                "      ┌─────────┬────────┬───────────┬───────────────────────────────────────────────┬───────────────────┬─────────────────────┐",
-                                "      │ (index) │ status │ direction │                  bidder_addr                  │ filled_ask_amount │ filled_offer_amount │",
-                                "      ├─────────┼────────┼───────────┼───────────────────────────────────────────────┼───────────────────┼─────────────────────┤",
-                                "      │    5    │ 'open' │   'buy'   │ 'orai1g4h64yjt0fvzv5v2j8tyfnpe5kmnetejvfgs7g' │        '0'        │         '0'         │",
-                                "      │    6    │ 'open' │   'buy'   │ 'orai1g4h64yjt0fvzv5v2j8tyfnpe5kmnetejvfgs7g' │        '0'        │         '0'         │",
-                                "      └─────────┴────────┴───────────┴───────────────────────────────────────────────┴───────────────────┴─────────────────────┘",
-                                "",
-                                "      at printOrders (src/tests/common.ts:119:11)",
-                                "",
-                                "    console.log",
-                                "      ┌─────────┬────────┬───────────┬───────────────────────────────────────────────┬───────────────────┬─────────────────────┐",
-                                "      │ (index) │ status │ direction │                  bidder_addr                  │ filled_ask_amount │ filled_offer_amount │",
-                                "      ├─────────┼────────┼───────────┼───────────────────────────────────────────────┼───────────────────┼─────────────────────┤",
-                                "      │    2    │ 'open' │   'buy'   │ 'orai1g4h64yjt0fvzv5v2j8tyfnpe5kmnetejvfgs7g' │        '0'        │         '0'         │",
-                                "      │    3    │ 'open' │  'sell'   │ 'orai1g4h64yjt0fvzv5v2j8tyfnpe5kmnetejvfgs7g' │        '0'        │         '0'         │",
-                                "      │    4    │ 'open' │  'sell'   │ 'orai1g4h64yjt0fvzv5v2j8tyfnpe5kmnetejvfgs7g' │        '0'        │         '0'         │",
-                                "      └─────────┴────────┴───────────┴───────────────────────────────────────────────┴───────────────────┴─────────────────────┘",
-                                "",
-                                "      at printOrders (src/tests/common.ts:119:11)",
-                                "",
-                                "    console.log",
-                                "      ┌─────────┬──────────────────┬───────────┬───────────────────────────────────────────────┬───────────────────┬─────────────────────┐",
-                                "      │ (index) │      status      │ direction │                  bidder_addr                  │ filled_ask_amount │ filled_offer_amount │",
-                                "      ├─────────┼──────────────────┼───────────┼───────────────────────────────────────────────┼───────────────────┼─────────────────────┤",
-                                "      │    2    │ 'partial_filled' │   'buy'   │ 'orai1g4h64yjt0fvzv5v2j8tyfnpe5kmnetejvfgs7g' │       '630'       │        '107'        │",
-                                "      │    3    │      'open'      │  'sell'   │ 'orai1g4h64yjt0fvzv5v2j8tyfnpe5kmnetejvfgs7g' │        '0'        │         '0'         │",
-                                "      └─────────┴──────────────────┴───────────┴───────────────────────────────────────────────┴───────────────────┴─────────────────────┘",
-                                "",
-                                "      at printOrders (src/tests/common.ts:119:11)",
-                                "",
-                                "PASS src/tests/universal-swap.spec.ts",
-                                "",
-                                "Test Suites: 2 passed, 2 total",
-                                "Tests:       50 passed, 50 total",
-                                "Snapshots:   0 total",
-                                "Time:        1.882 s, estimated 2 s",
-                                "Ran all test suites.",
-                                ""
-                            ]
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "language": "markdown",
-            "source": [
-                "### Run simulation"
+                "yarn add @oraichain/cw-simulate -D"
             ],
             "outputs": []
-        },
-        {
-            "language": "shellscript",
-            "source": [
-                "yarn simulate"
-            ],
-            "outputs": [
-                {
-                    "items": [
-                        {
-                            "mime": "application/vnd.code.notebook.stdout",
-                            "value": [
-                                "yarn run v1.22.19",
-                                "$ node src/simulate.mjs",
-                                "{",
-                                "  offerings: [",
-                                "    {",
-                                "      id: 2819,",
-                                "      token_id: '15456',",
-                                "      price: '1000000000',",
-                                "      contract_addr: 'orai1ase8wkkhczqdda83f0cd9lnuyvf47465j70hyk',",
-                                "      seller: 'orai1rst6v5yne7lcxtapzu647vyu4lu4c66mzt4vg4'",
-                                "    }",
-                                "  ]",
-                                "}",
-                                "{",
-                                "  orders: [",
-                                "    {",
-                                "      order_id: 1961390,",
-                                "      status: 'open',",
-                                "      direction: 'buy',",
-                                "      bidder_addr: 'orai1g4s5qdw54wdj6ggukfdr59j4uv82asczunxpj7',",
-                                "      offer_asset: {",
-                                "        info: {",
-                                "          token: {",
-                                "            contract_addr: 'orai12hzjxfh77wl572gdzct2fxv2arxcwh6gykc7qh'",
-                                "          }",
-                                "        },",
-                                "        amount: '49055251'",
-                                "      },",
-                                "      ask_asset: { info: { native_token: { denom: 'orai' } }, amount: '27252917' },",
-                                "      filled_offer_amount: '0',",
-                                "      filled_ask_amount: '0'",
-                                "    },",
-                                "    {",
-                                "      order_id: 1493219,",
-                                "      status: 'open',",
-                                "      direction: 'sell',",
-                                "      bidder_addr: 'orai1g4s5qdw54wdj6ggukfdr59j4uv82asczunxpj7',",
-                                "      offer_asset: { info: { native_token: { denom: 'orai' } }, amount: '14062453' },",
-                                "      ask_asset: {",
-                                "        info: {",
-                                "          token: {",
-                                "            contract_addr: 'orai12hzjxfh77wl572gdzct2fxv2arxcwh6gykc7qh'",
-                                "          }",
-                                "        },",
-                                "        amount: '44296727'",
-                                "      },",
-                                "      filled_offer_amount: '0',",
-                                "      filled_ask_amount: '0'",
-                                "    }",
-                                "  ]",
-                                "}",
-                                "8223 MB",
-                                "Done in 1.16s.",
-                                ""
-                            ]
-                        }
-                    ]
-                }
-            ]
         },
         {
             "language": "markdown",
@@ -175,6 +38,36 @@
         {
             "language": "markdown",
             "source": [
+                "### Deploy contract on SimulateCosmwasmClient"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "import { Cw20BaseClient } from \"@oraichain/common-contracts-sdk\";\nimport * as commonArtifacts from \"@oraichain/common-contracts-build\";\nimport fs from \"fs\";\n\nconst { codeId } = await client.upload(senderAddress, fs.readFileSync(commonArtifacts.getContractDir(\"cw20-base\")), \"auto\");\nconst { contractAddress } = await client.instantiate(senderAddress, codeId, {\n    decimals: 6,\n    symbol: \"CVT\",\n    name: \"cosmoverse token\",\n    mint: { minter: senderAddress },\n    initial_balances: [{ address: senderAddress, amount: \"1000000000\" }] \n});\n\nconst cw20Contract = new Cw20BaseClient(client, senderAddress, contractAddress);\n\nawait cw20Contract.tokenInfo()"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "text/plain",
+                            "value": [
+                                "{",
+                                "  name: \u001b[32m'cosmoverse token'\u001b[39m,",
+                                "  symbol: \u001b[32m'CVT'\u001b[39m,",
+                                "  decimals: \u001b[33m6\u001b[39m,",
+                                "  total_supply: \u001b[32m'1000000000'\u001b[39m",
+                                "}"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "markdown",
+            "source": [
                 "### Load smart contract with state from running blockchain"
             ],
             "outputs": []
@@ -182,7 +75,7 @@
         {
             "language": "javascript",
             "source": [
-                "import { DownloadState } from \"@oraichain/cw-simulate\";\nimport { Cw20BaseClient} from \"@oraichain/common-contracts-sdk\";\nimport path from \"path\";\n\nconst downloadState = new DownloadState('https://lcd.orai.io', path.join(__dirname, \"src/data\"));\nawait downloadState.loadState(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\", \"kwt token\");\nconst kwtContract = new Cw20BaseClient(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\");\n\nawait kwtContract.allAccounts({})"
+                "import { DownloadState } from \"@oraichain/cw-simulate\";\nimport { Cw20BaseClient} from \"@oraichain/common-contracts-sdk\";\nimport path from \"path\";\n\nconst downloadState = new DownloadState('https://lcd.orai.io', path.join(__dirname, \"src/data\"));\nawait downloadState.loadState(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\", \"kwt token\");\nconst cw20Contract = new Cw20BaseClient(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\");\n\nawait cw20Contract.allAccounts({})"
             ],
             "outputs": [
                 {
