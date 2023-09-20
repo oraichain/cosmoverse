@@ -313,7 +313,7 @@
         {
             "language": "javascript",
             "source": [
-                "import { coins } from \"@cosmjs/stargate\"\n// topup\nclient.app.bank.setBalance(ics20Contract.contractAddress, coins(\"10000000000000\", \"orai\"));\n\nconst airiIbcDenom = \"tron-testnet0x7e2A35C746F2f7C240B664F1Da4DD100141AE71F\";\n\nawait ics20Contract.updateMappingPair({\n   localAssetInfo: {\n     token: {\n       contract_addr: cw20Contract.contractAddress\n     }\n   },\n   localAssetInfoDecimals: 6,\n   denom: airiIbcDenom,\n   remoteDecimals: 6,\n   localChannelId: channel\n});\n\nawait client.getBalance(ics20Contract.contractAddress, 'orai');"
+                "import { coins } from \"@cosmjs/stargate\"\n// topup\nclient.app.bank.setBalance(ics20Contract.contractAddress, coins(\"10000000000000\", \"orai\"));\n\nconst airiIbcDenom = \"tron-testnet0x7e2A35C746F2f7C240B664F1Da4DD100141AE71F\";\n\nawait ics20Contract.updateMappingPair({\n   localAssetInfo: {\n     token: {\n       contract_addr: cw20Contract.contractAddress\n     }\n   },\n   localAssetInfoDecimals: 6,\n   denom: airiIbcDenom,\n   remoteDecimals: 6,\n   localChannelId: channel\n});\n\nawait client.getBalance(ics20Contract.contractAddress, 'orai')"
             ],
             "outputs": [
                 {
