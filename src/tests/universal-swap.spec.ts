@@ -1,4 +1,4 @@
-import { Event, toBinary } from "@cosmjs/cosmwasm-stargate";
+import { Event, fromBinary, toBinary } from "@cosmjs/cosmwasm-stargate";
 import { Coin, coins } from "@cosmjs/proto-signing";
 import { CWSimulateApp, GenericError, IbcOrder, IbcPacket, SimulateCosmWasmClient } from "@oraichain/cw-simulate";
 import { Ok } from "ts-results";
@@ -357,7 +357,7 @@ describe.only("IBCModule", () => {
         relayer: cosmosSenderAddress
       });
 
-      if (assetInfo && (assetInfo as any).token) {
+      if (assetInfo && "token" in assetInfo) {
         const bobBalance = await airiToken.balance({ address: bobAddress });
         expect(bobBalance.balance).toEqual(expectedBalance[0].amount);
         return;
@@ -398,7 +398,7 @@ describe.only("IBCModule", () => {
       const packetReceiveRes = await airiToken.send({
         amount: (parseInt(ibcTransferAmount) + 1).toString(),
         contract: ics20Contract.contractAddress,
-        msg: Buffer.from(JSON.stringify(transferBackMsg)).toString("base64")
+        msg: toBinary(transferBackMsg)
       });
     } catch (error) {
       expect(error.message).toContain("Insufficient funds to redeem voucher on channel");
@@ -432,7 +432,7 @@ describe.only("IBCModule", () => {
     await airiToken.send({
       amount: ibcTransferAmount,
       contract: ics20Contract.contractAddress,
-      msg: Buffer.from(JSON.stringify(transferBackMsg)).toString("base64")
+      msg: toBinary(transferBackMsg)
     });
     const ibcWasmAiriBalance = await airiToken.balance({ address: ics20Contract.contractAddress });
     expect(ibcWasmAiriBalance.balance).toEqual(initialBalanceAmount);
@@ -649,7 +649,7 @@ describe.only("IBCModule", () => {
       await lpToken.send({
         amount: "1000",
         contract: pairAddress,
-        msg: Buffer.from(JSON.stringify({ withdraw_liquidity: {} })).toString("base64")
+        msg: toBinary({ withdraw_liquidity: {} })
       });
     });
 
@@ -776,7 +776,7 @@ describe.only("IBCModule", () => {
       });
       expect(findWasmEvent(result.events, "action", "native_receive_id")).not.toBeUndefined();
       // ack should be successful
-      expect(result.acknowledgement).toEqual(Buffer.from('{"result":"MQ=="}').toString("base64"));
+      expect(result.acknowledgement).toEqual(toBinary({ result: "MQ==" }));
 
       // other types of reply id must not be called
       expect(findWasmEvent(result.events, "action", "swap_ops_failure_id")).toBeUndefined();
@@ -799,7 +799,7 @@ describe.only("IBCModule", () => {
       });
       expect(findWasmEvent(result.events, "action", "swap_ops_failure_id")).not.toBeUndefined();
       // ack should be successful
-      expect(result.acknowledgement).toEqual(Buffer.from('{"result":"MQ=="}').toString("base64"));
+      expect(result.acknowledgement).toEqual(toBinary({ result: "MQ==" }));
       // refunding also fails because of not enough balance to refund
       expect(findWasmEvent(result.events, "action", "refund_failure_id")).not.toBeUndefined();
 
@@ -824,7 +824,7 @@ describe.only("IBCModule", () => {
       // refunding also fails because of not enough balance to refund
       expect(findWasmEvent(result.events, "action", "ibc_transfer_native_error_id")).not.toBeUndefined();
       // ack should be successful
-      expect(result.acknowledgement).toEqual(Buffer.from('{"result":"MQ=="}').toString("base64"));
+      expect(result.acknowledgement).toEqual(toBinary({ result: "MQ==" }));
       expect(findWasmEvent(result.events, "undo_increase_channel", channel)).toBeUndefined();
 
       // other types of reply id must not be called
@@ -859,7 +859,7 @@ describe.only("IBCModule", () => {
 
       expect(findWasmEvent(result.events, "action", "swap_ops_failure_id")).not.toBeUndefined();
       // ack should be successful
-      expect(result.acknowledgement).toEqual(Buffer.from('{"result":"MQ=="}').toString("base64"));
+      expect(result.acknowledgement).toEqual(toBinary({ result: "MQ==" }));
       // refunding also fails because of not enough balance to refund
       expect(findWasmEvent(result.events, "action", "refund_failure_id")).not.toBeUndefined();
 
@@ -890,7 +890,7 @@ describe.only("IBCModule", () => {
       expect(findWasmEvent(result.events, "action", "acknowledge")).toBeUndefined();
       expect(findWasmEvent(result.events, "undo_reduce_channel", channel)).toBeUndefined();
       // ack should be successful
-      expect(result.acknowledgement).toEqual(Buffer.from('{"result":"MQ=="}').toString("base64"));
+      expect(result.acknowledgement).toEqual(toBinary({ result: "MQ==" }));
 
       // for ibc native transfer case, we wont have refund either
       expect(
@@ -1286,21 +1286,31 @@ describe.only("IBCModule", () => {
         relayer: cosmosSenderAddress
       });
 
-      expect((result.messages[0].msg as any).wasm.execute.contract_addr).toEqual(ics20Contract.contractAddress);
-      expect(
-        JSON.parse(Buffer.from((result.messages[0].msg as any).wasm.execute.msg, "base64").toString("utf8"))
-      ).toEqual({
-        increase_channel_balance_ibc_receive: {
-          dest_channel_id: channel,
-          ibc_denom: `wasm.${ics20Contract.contractAddress}/${channel}/${oraiIbcDenom}`,
-          amount: ibcTransferAmount,
-          local_receiver: bobAddress
+      expect(result.messages.length).toEqual(2);
+
+      result.messages.forEach(({ msg }) => {
+        if ("wasm" in msg) {
+          const wasmMsg = msg.wasm;
+          if ("execute" in wasmMsg) {
+            expect(wasmMsg.execute.contract_addr).toEqual(ics20Contract.contractAddress);
+            expect(fromBinary(wasmMsg.execute.msg)).toEqual({
+              increase_channel_balance_ibc_receive: {
+                dest_channel_id: channel,
+                ibc_denom: `wasm.${ics20Contract.contractAddress}/${channel}/${oraiIbcDenom}`,
+                amount: ibcTransferAmount,
+                local_receiver: bobAddress
+              }
+            });
+          }
+        } else if ("ibc" in msg) {
+          const ibcMsg = msg.ibc;
+          if ("transfer" in ibcMsg) {
+            expect(ibcMsg.transfer.channel_id).toEqual(unknownChannel);
+            expect(ibcMsg.transfer.to_address).toEqual(bobAddress);
+            expect(ibcMsg.transfer.amount).toEqual({ denom: ORAI, amount: ibcTransferAmount });
+          }
         }
       });
-      expect(result.messages.length).toEqual(2);
-      expect((result.messages[1].msg as any).ibc.transfer.channel_id).toEqual(unknownChannel);
-      expect((result.messages[1].msg as any).ibc.transfer.to_address).toEqual(bobAddress);
-      expect((result.messages[1].msg as any).ibc.transfer.amount).toEqual({ denom: ORAI, amount: ibcTransferAmount });
     });
 
     it("cw-ics20-test-single-step-handle_ibc_packet_receive_native_remote_chain-has-relayer-fee-should-be-deducted", async () => {

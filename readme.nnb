@@ -217,7 +217,7 @@
         {
             "language": "javascript",
             "source": [
-                "import { DownloadState } from \"@oraichain/cw-simulate\";\nimport { Cw20BaseClient} from \"@oraichain/common-contracts-sdk\";\nimport path from \"path\";\n\nconst downloadState = new DownloadState('https://lcd.orai.io', path.join(__dirname, \"src/data\"));\nawait downloadState.loadState(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\", \"kwt token\");\nconst cw20Contract = new Cw20BaseClient(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\");\n\nawait cw20Contract.allAccounts({limit:5})"
+                "import { DownloadState } from \"@oraichain/cw-simulate\";\nimport { Cw20BaseClient} from \"@oraichain/common-contracts-sdk\";\nimport path from \"path\";\n\nconst downloadState = new DownloadState('https://lcd.orai.io', path.join(__dirname, \"src/data\"));\nawait downloadState.loadState(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\", \"kwt token\");\nconst kwtContract = new Cw20BaseClient(client, senderAddress, \"orai1nd4r053e3kgedgld2ymen8l9yrw8xpjyaal7j5\");\n\nawait kwtContract.allAccounts({limit:5})"
             ],
             "outputs": [
                 {
@@ -234,6 +234,122 @@
                                 "    \u001b[32m'orai1qt3s05k29d3qla398dg90x8226asejfewknj2g'\u001b[39m",
                                 "  ]",
                                 "}"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "### Setup port module using smart contract"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "import * as commonArtifacts from \"@oraichain/common-contracts-build\";\nimport { CwIcs20LatestClient } from \"@oraichain/common-contracts-sdk\";\nimport fs from 'fs';\n\n// deploy ics20 contract \nconst { codeId } = await client.upload(\n    senderAddress,\n    fs.readFileSync(commonArtifacts.getContractDir(\"cw-ics20-latest\")),\n    \"auto\"\n);\n\nconst { contractAddress } = await client.instantiate(senderAddress, codeId, {\n    allowlist: [],\n    default_timeout: 3600,\n    gov_contract: senderAddress,\n    swap_router_contract: \"placeholder\"\n});\n\n\nconst ics20Contract = new CwIcs20LatestClient(client, senderAddress, contractAddress);\n\nawait ics20Contract.config()"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "text/plain",
+                            "value": [
+                                "{",
+                                "  default_timeout: \u001b[33m3600\u001b[39m,",
+                                "  default_gas_limit: \u001b[1mnull\u001b[22m,",
+                                "  fee_denom: \u001b[32m'orai'\u001b[39m,",
+                                "  swap_router_contract: \u001b[32m'placeholder'\u001b[39m,",
+                                "  gov_contract: \u001b[32m'orai14vcw5qk0tdvknpa38wz46js5g7vrvut8lk0lk6'\u001b[39m,",
+                                "  token_fee_receiver: \u001b[32m'orai14vcw5qk0tdvknpa38wz46js5g7vrvut8lk0lk6'\u001b[39m,",
+                                "  relayer_fee_receiver: \u001b[32m'orai14vcw5qk0tdvknpa38wz46js5g7vrvut8lk0lk6'\u001b[39m,",
+                                "  token_fees: [],",
+                                "  relayer_fees: []",
+                                "}"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "### Setup IBC channel between Cosmos Hub transfer port module and Oraichain CosmWasm port module"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "const oraiPort = \"wasm.\" + ics20Contract.contractAddress;\nconst channel = \"channel-2\"\nconst packetData = {\n    src: {\n      port_id: \"transfer\",\n      channel_id: channel\n    },\n    dest: {\n      port_id: oraiPort,\n      channel_id: channel\n    },\n    sequence: 27,\n    timeout: {\n      block: {\n        revision: 1,\n        height: 12345678\n      }\n    }\n};\n\n// init ibc channel between two chains\nclient.app.ibc.relay(channel, oraiPort, channel, \"transfer\", cosmosChain);"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "### Send Open and Connect packets"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "import { IbcOrder } from \"@oraichain/cw-simulate\";\n\nawait cosmosChain.ibc.sendChannelOpen({\n    open_init: {\n        channel: {\n            counterparty_endpoint: {\n                port_id: oraiPort,\n                channel_id: channel\n            },\n            endpoint: {\n                port_id: \"transfer\",\n                channel_id: channel\n            },\n            order: IbcOrder.Unordered,\n            version: \"ics20-1\",\n            connection_id: \"connection-0\"\n        }\n    }\n});\n\nawait cosmosChain.ibc.sendChannelConnect({\n    open_ack: {\n        channel: {\n            counterparty_endpoint: {\n                port_id: oraiPort,\n                channel_id: channel\n            },\n            endpoint: {\n                port_id: \"transfer\",\n                channel_id: channel\n            },\n            order: IbcOrder.Unordered,\n            version: \"ics20-1\",\n            connection_id: \"connection-0\"\n        },\n        counterparty_version: \"ics20-1\"\n    }\n});\n\n// handle IBC message timeout\ncosmosChain.ibc.addMiddleWare((msg, app) => {\n    const data = msg.data.packet;\n    if (Number(data.timeout.timestamp) < cosmosChain.time) {\n        throw new GenericError(\"timeout at \" + data.timeout.timestamp);\n    }\n});"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "### Prepare for interaction"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "import { coins } from \"@cosmjs/stargate\"\n// topup\nclient.app.bank.setBalance(ics20Contract.contractAddress, coins(\"10000000000000\", \"orai\"));\n\nconst airiIbcDenom = \"tron-testnet0x7e2A35C746F2f7C240B664F1Da4DD100141AE71F\";\n\nawait ics20Contract.updateMappingPair({\n   localAssetInfo: {\n     token: {\n       contract_addr: cw20Contract.contractAddress\n     }\n   },\n   localAssetInfoDecimals: 6,\n   denom: airiIbcDenom,\n   remoteDecimals: 6,\n   localChannelId: channel\n});\n\nawait client.getBalance(ics20Contract.contractAddress, 'orai');"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "text/plain",
+                            "value": [
+                                "{",
+                                "  amount: \u001b[32m'10000000000000'\u001b[39m,",
+                                "  denom: \u001b[32m'orai'\u001b[39m",
+                                "}"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "markdown",
+            "source": [
+                "### Send IBC token between Cosmos Hub and Oraichain"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "javascript",
+            "source": [
+                "\nimport bech32 from \"bech32\";\nimport { toBinary } from \"@cosmjs/cosmwasm-stargate\";\n\nconst bobAddress = \"orai1ur2vsjrjarygawpdwtqteaazfchvw4fg6uql76\";\nconst cosmosSenderAddress = bech32.encode(\"cosmos\", bech32.decode(senderAddress).words);\n\n// now send ibc package\nconst icsPackage = {\n    amount: \"100000000\",\n    denom: airiIbcDenom,\n    receiver: bobAddress,\n    sender: cosmosSenderAddress,\n    memo: \"\"\n};\n\n// transfer from cosmos to oraichain, should pass\nawait cosmosChain.ibc.sendPacketReceive({\n    packet: {\n      data: toBinary(icsPackage),\n      ...packetData\n    },\n    relayer: cosmosSenderAddress\n});\n\nconst transferBackMsg = {\n    local_channel_id: channel,\n    remote_address: cosmosSenderAddress,\n    remote_denom: airiIbcDenom\n};\n\ncw20Contract.sender = bobAddress;\n\nawait cw20Contract.send({\n    amount: \"100000000\",\n    contract: ics20Contract.contractAddress,\n    msg: toBinary(transferBackMsg)\n});\nconst ibcBalance = await cw20Contract.balance({ address: ics20Contract.contractAddress });\n\nibcBalance.balance\n"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "text/plain",
+                            "value": [
+                                "\u001b[32m'100000000'\u001b[39m"
                             ]
                         }
                     ]
