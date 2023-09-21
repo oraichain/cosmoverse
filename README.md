@@ -6,6 +6,14 @@
 yarn add @oraichain/cw-simulate -D
 ```
 
+### Features
+
+- configure multiple host chain environments with chain-specific settings / state
+- multiple simultaneous contract instances can exist per chain
+- chain modules can be simulated through custom user code
+- extensible for further instrumentation via custom middlewares
+- load fork state from running blockhain
+
 ### Import cw-simulate module and create new instance
 
 ```js

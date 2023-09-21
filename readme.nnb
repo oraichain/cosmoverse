@@ -24,6 +24,13 @@
         {
             "language": "markdown",
             "source": [
+                "### Features\n\n- configure multiple host chain environments with chain-specific settings / state\n- multiple simultaneous contract instances can exist per chain\n- chain modules can be simulated through custom user code\n- extensible for further instrumentation via custom middlewares\n- load fork state from running blockhain"
+            ],
+            "outputs": []
+        },
+        {
+            "language": "markdown",
+            "source": [
                 "### Import cw-simulate module and create new instance"
             ],
             "outputs": []
