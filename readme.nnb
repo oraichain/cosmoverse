@@ -24,7 +24,7 @@
         {
             "language": "markdown",
             "source": [
-                "### Features\n\n- configure multiple host chain environments with chain-specific settings / state\n- multiple simultaneous contract instances can exist per chain\n- chain modules can be simulated through custom user code\n- extensible for further instrumentation via custom middlewares\n- load fork state from running blockhain"
+                "### Features\n\n- configure multiple host chain environments with chain-specific settings / state (cosmos hub, terra, oraichain ...)\n- multiple simultaneous contract instances can exist per chain (complex module requires many smart contracts)\n- chain modules can be simulated through custom user code (bank, wasm, ibc modules ...)\n- extensible for further instrumentation via custom middlewares (extended logic such as IBC hooks)\n- load fork state from running blockhain (for integration test with mainnet)"
             ],
             "outputs": []
         },
@@ -80,7 +80,7 @@
         {
             "language": "javascript",
             "source": [
-                "import { Cw20BaseClient } from \"@oraichain/common-contracts-sdk\";\nimport * as commonArtifacts from \"@oraichain/common-contracts-build\";\nimport fs from \"fs\";\n\nconst { codeId } = await client.upload(senderAddress, fs.readFileSync(commonArtifacts.getContractDir(\"cw20-base\")), \"auto\");\nconst { contractAddress, gasUsed } = await client.instantiate(senderAddress, codeId, {\n    decimals: 6,\n    symbol: \"CVT\",\n    name: \"cosmoverse token\",\n    mint: { minter: senderAddress },\n    initial_balances: [{ address: senderAddress, amount: \"1000000000\" }] \n});\nconst cw20Contract = new Cw20BaseClient(client, senderAddress, contractAddress);\n\nawait cw20Contract.tokenInfo()\n"
+                "import { Cw20BaseClient } from \"@oraichain/common-contracts-sdk\";\nimport * as commonArtifacts from \"@oraichain/common-contracts-build\";\nimport fs from \"fs\";\n\nconst { codeId } = await client.upload(senderAddress, fs.readFileSync(commonArtifacts.getContractDir(\"cw20-base\")), \"auto\");\nconst { contractAddress } = await client.instantiate(senderAddress, codeId, {\n    decimals: 6,\n    symbol: \"CVT\",\n    name: \"cosmoverse token\",\n    mint: { minter: senderAddress },\n    initial_balances: [{ address: senderAddress, amount: \"1000000000\" }] \n});\nconst cw20Contract = new Cw20BaseClient(client, senderAddress, contractAddress);\n\nawait cw20Contract.tokenInfo()\n"
             ],
             "outputs": [
                 {
@@ -320,7 +320,7 @@
         {
             "language": "javascript",
             "source": [
-                "import { coins } from \"@cosmjs/stargate\"\n// topup\nclient.app.bank.setBalance(ics20Contract.contractAddress, coins(\"10000000000000\", \"orai\"));\n\nconst airiIbcDenom = \"tron-testnet0x7e2A35C746F2f7C240B664F1Da4DD100141AE71F\";\n\nawait ics20Contract.updateMappingPair({\n   localAssetInfo: {\n     token: {\n       contract_addr: cw20Contract.contractAddress\n     }\n   },\n   localAssetInfoDecimals: 6,\n   denom: airiIbcDenom,\n   remoteDecimals: 6,\n   localChannelId: channel\n});\n\nawait client.getBalance(ics20Contract.contractAddress, 'orai')"
+                "import { coins } from \"@cosmjs/stargate\"\n\nconst airiIbcDenom = \"tron-testnet0x7e2A35C746F2f7C240B664F1Da4DD100141AE71F\";\n\nawait ics20Contract.updateMappingPair({\n   localAssetInfo: {\n     token: {\n       contract_addr: cw20Contract.contractAddress\n     }\n   },\n   localAssetInfoDecimals: 6,\n   denom: airiIbcDenom,\n   remoteDecimals: 6,\n   localChannelId: channel\n});\n\n// topup\nclient.app.bank.setBalance(ics20Contract.contractAddress, coins(\"10000000000000\", \"orai\"));\n\nawait client.getBalance(ics20Contract.contractAddress, 'orai')"
             ],
             "outputs": [
                 {
