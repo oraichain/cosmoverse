@@ -107,7 +107,10 @@ await client.app.ibc.sendTransfer({
   channelId: "channel-0",
   receiver: "cosmos1ur2vsjrjarygawpdwtqteaazfchvw4fgf0kulf",
   token: { amount: "1000000", denom: "orai" },
-  sender: senderAddress
+  sender: senderAddress,
+  timeout: {
+    timestamp: ""
+  }
 });
 
 cosmosChain.bank.getBalance("cosmos1ur2vsjrjarygawpdwtqteaazfchvw4fgf0kulf");
@@ -255,7 +258,21 @@ const icsPackage = {
 await cosmosChain.ibc.sendPacketReceive({
   packet: {
     data: toBinary(icsPackage),
-    ...packetData
+    src: {
+      port_id: "transfer",
+      channel_id: channel
+    },
+    dest: {
+      port_id: oraiPort,
+      channel_id: channel
+    },
+    sequence: 27,
+    timeout: {
+      block: {
+        revision: 1,
+        height: 12345678
+      }
+    }
   },
   relayer: cosmosSenderAddress
 });
