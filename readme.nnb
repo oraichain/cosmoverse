@@ -80,7 +80,7 @@
         {
             "language": "javascript",
             "source": [
-                "import { Cw20BaseClient } from \"@oraichain/common-contracts-sdk\";\nimport * as commonArtifacts from \"@oraichain/common-contracts-build\";\nimport fs from \"fs\";\n\nconst { codeId } = await client.upload(senderAddress, fs.readFileSync(commonArtifacts.getContractDir(\"cw20-base\")), \"auto\");\nconst { contractAddress } = await client.instantiate(senderAddress, codeId, {\n    decimals: 6,\n    symbol: \"CVT\",\n    name: \"cosmoverse token\",\n    mint: { minter: senderAddress },\n    initial_balances: [{ address: senderAddress, amount: \"1000000000\" }] \n});\nconst cw20Contract = new Cw20BaseClient(client, senderAddress, contractAddress);\n\nawait cw20Contract.tokenInfo()\n"
+                "import { Cw20BaseClient } from \"@oraichain/common-contracts-sdk\";\nimport * as commonArtifacts from \"@oraichain/common-contracts-build\";\nimport fs from \"fs\";\n\nconst { codeId } = await client.upload(senderAddress, fs.readFileSync(commonArtifacts.getContractDir(\"cw20-base\")), \"auto\");\nconst { contractAddress } = await client.instantiate(senderAddress, codeId, {\n    decimals: 6,\n    symbol: \"CVT\",\n    name: \"cosmoverse token\",\n    mint: { minter: senderAddress },\n    initial_balances: [{ address: senderAddress, amount: \"1000000000\" }] \n}, \"cw20 token\", \"auto\");\nconst cw20Contract = new Cw20BaseClient(client, senderAddress, contractAddress);\n\nawait cw20Contract.tokenInfo()\n"
             ],
             "outputs": [
                 {

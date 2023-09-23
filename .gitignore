@@ -21,6 +21,7 @@ typings/
 
 # Optional eslint cache
 .eslintcache
+.ipynb_checkpoints/
 
 # Ignore environment variables file
 .env
