@@ -4,8 +4,9 @@ body {
 }
 
 #root {
-    width: 99%;
-    max-width: 750px;
+    width: calc(100vw - 400px);
+    min-width: 750px;
+    max-width: 1024px;
     margin: 0 auto;
 }
 

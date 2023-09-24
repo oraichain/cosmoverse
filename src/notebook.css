@@ -71,13 +71,26 @@
     text-align: right;
 }
 
+.nb-input pre[class*="language-"] {
+    margin-top: -52px;
+}
+
+.run-cell {
+    position: sticky;
+    top: 10px;
+    z-index: 9999;
+    margin-left: -30px;
+    margin-top: 30px;
+    cursor: pointer;
+}
+
 .nb-input:before {
     content: "In [" attr(data-prompt-number) "]:";
 }
 .nb-output:before {
     content: "Out [" attr(data-prompt-number) "]:";
+    margin-top: 1em;
 }
-
 
 div[style="max-height:1000px;max-width:1500px;overflow:auto;"] {
     max-height: none !important;    

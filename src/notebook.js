@@ -1,7 +1,26 @@
 import { parse } from "marked";
 import { AnsiUp } from "ansi_up";
 import { sanitize } from "dompurify";
+import { basicSetup, EditorView } from "codemirror";
+import { javascript } from "@codemirror/lang-javascript";
+import json from "./json";
 import "./notebook.css";
+import * as cwSimulate from "@oraichain/cw-simulate";
+import * as stargate from "@cosmjs/stargate";
+import * as commonContractsSdk from "@oraichain/common-contracts-sdk";
+import * as cosmwasmStargate from "@cosmjs/cosmwasm-stargate";
+
+Object.assign(window, cwSimulate, stargate, commonContractsSdk, cosmwasmStargate);
+window.Buffer = require("buffer");
+window.bech32 = require("bech32");
+
+const originalLog = console.log;
+
+const logs = [];
+console.log = function (...value) {
+  originalLog.apply(console, value);
+  logs.push(...value);
+};
 
 var ansi_up = new AnsiUp();
 var VERSION = "0.7.0";
@@ -74,8 +93,39 @@ nb.Input.prototype.render = function () {
   code_el.setAttribute("data-language", lang);
   pre_el.className = "language-" + lang;
   code_el.className = "language-" + lang;
-  code_el.innerHTML = nb.highlighter(escapeHTML(joinText(this.raw)), pre_el, code_el, lang);
+
+  const editor = new EditorView({
+    // doc: "console.log('hello')\n",
+    doc: joinText(this.raw),
+    extensions: [basicSetup, javascript()],
+    parent: code_el
+  });
   pre_el.appendChild(code_el);
+
+  var run_el = makeElement("button");
+  run_el.className = "run-cell";
+  run_el.innerHTML = " ❯ ";
+  run_el.onclick = async () => {
+    editor.focus();
+    const code = editor.contentDOM.innerText;
+    const stdoutEl = holder.nextSibling.querySelector(".nb-stdout");
+    try {
+      const result = await eval(`(async () => {${code}})()`);
+      if (result !== undefined) {
+        stdoutEl.innerHTML =
+          logs.map((log) => '<span style="width:100%;display:inline-block">' + json(log) + "</span>").join("") +
+          json(result);
+      } else {
+        stdoutEl.innerHTML = "";
+      }
+    } catch (ex) {
+      stdoutEl.innerHTML = json(ex.message);
+    }
+    logs.length = 0;
+  };
+
+  holder.appendChild(run_el);
+
   holder.appendChild(pre_el);
   this.el = holder;
   return holder;
@@ -247,19 +297,15 @@ nb.Cell = function (raw, worksheet) {
     cell.number = raw.prompt_number > -1 ? raw.prompt_number : raw.execution_count;
     var source = raw.input || [raw.source];
     cell.input = new nb.Input(source, cell);
-    var raw_outputs = (cell.raw.outputs || []).map(function (o) {
+    if (cell.raw.outputs.length === 0) {
+      cell.raw.outputs.push({ name: "stdout", output_type: "stream", text: "" });
+    }
+    var raw_outputs = cell.raw.outputs.map(function (o) {
       return new nb.Output(o, cell);
     });
     cell.outputs = nb.coalesceStreams(raw_outputs);
   }
 };
-
-var math_delimiters = [
-  { left: "$$", right: "$$", display: true },
-  { left: "\\[", right: "\\]", display: true },
-  { left: "\\(", right: "\\)", display: false },
-  { left: "$", right: "$", display: false }
-];
 
 nb.Cell.prototype.renderers = {
   markdown: function () {
@@ -284,7 +330,7 @@ nb.Cell.prototype.renderers = {
   code: function () {
     var cell_el = makeElement("div", ["cell", "code-cell"]);
     cell_el.appendChild(this.input.render());
-    var output_els = this.outputs.forEach(function (o) {
+    this.outputs.forEach(function (o) {
       cell_el.appendChild(o.render());
     });
     return cell_el;
@@ -331,6 +377,7 @@ nb.Notebook = function (raw, config) {
 
 nb.Notebook.prototype.render = function () {
   var notebook_el = makeElement("div", ["notebook"]);
+
   this.worksheets.forEach(function (w) {
     notebook_el.appendChild(w.render());
   });
