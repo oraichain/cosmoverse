@@ -106,17 +106,16 @@ nb.Input.prototype.render = function () {
   run_el.className = "run-cell";
   run_el.innerHTML = " ❯ ";
   run_el.onclick = async () => {
-    editor.focus();
     const code = editor.contentDOM.innerText;
     const stdoutEl = holder.nextSibling.querySelector(".nb-stdout");
     try {
       const result = await eval(`(async () => {${code}})()`);
+      const logStr = logs
+        .map((log) => '<span style="width:100%;display:inline-block">' + json(log) + "</span>")
+        .join("");
+      stdoutEl.innerHTML = logStr;
       if (result !== undefined) {
-        stdoutEl.innerHTML =
-          logs.map((log) => '<span style="width:100%;display:inline-block">' + json(log) + "</span>").join("") +
-          json(result);
-      } else {
-        stdoutEl.innerHTML = "";
+        stdoutEl.innerHTML += json(result);
       }
     } catch (ex) {
       stdoutEl.innerHTML = json(ex.message);
