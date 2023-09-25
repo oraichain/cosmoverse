@@ -15,9 +15,7 @@ module.exports = {
       buffer: require.resolve("buffer"),
       https: require.resolve("https-browserify")
     };
-    config.optimization = {
-      minimize: false
-    };
+
     return config;
   }
 };
