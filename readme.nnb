@@ -19,7 +19,34 @@
             "source": [
                 "yarn add @oraichain/cw-simulate -D"
             ],
-            "outputs": []
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "yarn add v1.22.19",
+                                "[1/4] Resolving packages...",
+                                "[2/4] Fetching packages...",
+                                "[3/4] Linking dependencies...",
+                                ""
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stderr",
+                            "value": [
+                                "warning \"react-scripts > eslint-config-react-app > eslint-plugin-flowtype@8.0.3\" has unmet peer dependency \"@babel/plugin-syntax-flow@^7.14.5\".",
+                                "warning \"react-scripts > eslint-config-react-app > eslint-plugin-flowtype@8.0.3\" has unmet peer dependency \"@babel/plugin-transform-react-jsx@^7.14.9\".",
+                                ""
+                            ]
+                        }
+                    ]
+                }
+            ]
         },
         {
             "language": "markdown",
@@ -38,7 +65,7 @@
         {
             "language": "javascript",
             "source": [
-                "\nimport { SimulateCosmWasmClient } from \"@oraichain/cw-simulate\";\nconst senderAddress = \"orai14vcw5qk0tdvknpa38wz46js5g7vrvut8lk0lk6\";\nconst client = new SimulateCosmWasmClient({\n  chainId: \"Oraichain\",\n  bech32Prefix: \"orai\",\n  metering: true\n});\n"
+                "\nimport { SimulateCosmWasmClient } from \"@oraichain/cw-simulate\";\nconst senderAddress = \"orai14vcw5qk0tdvknpa38wz46js5g7vrvut8lk0lk6\";\nconst client = new SimulateCosmWasmClient({\n  chainId: \"Oraichain\",\n  bech32Prefix: \"orai\",\n  metering: true\n});"
             ],
             "outputs": []
         },
