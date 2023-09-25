@@ -12,6 +12,7 @@ const options = [
 
 const App = () => {
   const [value, setValue] = useState();
+  const [disabled, setDisabled] = useState(false);
   const ref = useRef();
 
   useEffect(() => {
@@ -19,7 +20,11 @@ const App = () => {
   }, []);
 
   const runAll = async () => {
-    for (const run of runCodes) await run();
+    setDisabled(true);
+    for (const run of runCodes) {
+      await run();
+    }
+    setDisabled(false);
   };
 
   const changeNotebook = async (item) => {
@@ -34,7 +39,9 @@ const App = () => {
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Select autosize options={options} value={value} onChange={changeNotebook} />
-        <button onClick={runAll}>Run all</button>
+        <button disabled={disabled} onClick={runAll}>
+          Run all
+        </button>
       </div>
       <div ref={ref} />
     </div>

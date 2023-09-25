@@ -23,7 +23,6 @@ const importReg = /import\s+(?:\*\s+as\s*)?(.*?)\s+from\s*(["'])([@\w\s\\/.-]*?)
 window.runCodes = [];
 let promptNumber = 0;
 const originalLog = console.log;
-
 const logs = [];
 console.log = function (...value) {
   originalLog.apply(console, value);
@@ -106,7 +105,6 @@ nb.Input.prototype.render = function () {
   codeEl.className = "language-" + lang;
 
   const editor = new EditorView({
-    // doc: "console.log('hello')\n",
     doc: joinText(this.raw),
     extensions: [basicSetup, javascript()],
     parent: codeEl
@@ -116,34 +114,34 @@ nb.Input.prototype.render = function () {
   var runEl = makeElement("button");
   runEl.className = "run-cell";
   runEl.innerHTML = " ❯ ";
-  runCodes.push(
-    (runEl.onclick = async () => {
-      const code = editor.state.doc
-        .toString()
-        .replace(importReg, (m0, m1, m2, m3) => `const ${m1} = window.depedencies['${m3}']`);
-      const outputEl = holder.nextSibling;
-      const stdoutEl = outputEl.querySelector(".nb-stdout");
-      try {
-        originalLog(code);
-        const result = await new Function(`(async () => {${code}})()`)();
-        const logStr = logs
-          .map((log) => '<span style="width:100%;display:inline-block">' + json(log) + "</span>")
-          .join("");
-        stdoutEl.innerHTML = logStr;
-        if (result !== undefined) {
-          stdoutEl.innerHTML += json(result);
-        }
-        runEl.innerHTML = "&check;";
-      } catch (ex) {
-        stdoutEl.innerHTML = json(ex.message);
-      } finally {
-        promptNumber++;
-        holder.setAttribute("data-prompt-number", promptNumber);
-        outputEl.setAttribute("data-prompt-number", promptNumber);
-        logs.length = 0;
+  const handler = async () => {
+    const code = editor.state.doc
+      .toString()
+      .replace(importReg, (m0, m1, m2, m3) => `const ${m1} = window.depedencies['${m3}']`);
+    const outputEl = holder.nextSibling;
+    const stdoutEl = outputEl.querySelector(".nb-stdout");
+    try {
+      const result = await (1, eval)(`(async () => {${code}})()`);
+
+      const logStr = logs
+        .map((log) => '<span style="width:100%;display:inline-block">' + json(log) + "</span>")
+        .join("");
+      stdoutEl.innerHTML = logStr;
+      if (result !== undefined) {
+        stdoutEl.innerHTML += json(result);
       }
-    })
-  );
+      runEl.innerHTML = "&check;";
+    } catch (ex) {
+      stdoutEl.innerHTML = json(ex.message);
+    } finally {
+      promptNumber++;
+      holder.setAttribute("data-prompt-number", promptNumber);
+      outputEl.setAttribute("data-prompt-number", promptNumber);
+      logs.length = 0;
+    }
+  };
+  runCodes.push(handler);
+  runEl.onclick = handler;
 
   holder.appendChild(runEl);
 
