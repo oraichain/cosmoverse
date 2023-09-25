@@ -2025,6 +2025,11 @@
     ts-results "^3.3.0"
     tslib "^2.6.1"
 
+"@oraichain/dao-contracts-sdk@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@oraichain/dao-contracts-sdk/-/dao-contracts-sdk-1.0.4.tgz#97f5f682f7d0422bf0662df822c4a88b7e4667e9"
+  integrity sha512-AbcOEllmWlTfVGc43KzsBCj5ymCm55nOHvn4upyhNFLQl9AM1spThZIC/WcAtvKN1UDvg37KqDEjX8nciE6k6A==
+
 "@oraichain/immutable@^4.3.9":
   version "4.3.9"
   resolved "https://registry.yarnpkg.com/@oraichain/immutable/-/immutable-4.3.9.tgz#ff8d5a7b39b5b01f3f72a902cffbfea32ccb20c3"

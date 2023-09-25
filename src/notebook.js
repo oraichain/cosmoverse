@@ -15,6 +15,8 @@ window.depedencies = {
   "@oraichain/oraidex-contracts-sdk": require("@oraichain/oraidex-contracts-sdk"),
   "@cosmjs/cosmwasm-stargate": require("@cosmjs/cosmwasm-stargate"),
   "@oraichain/immutable": require("@oraichain/immutable"),
+  "@oraichain/dao-contracts-sdk": require("@oraichain/dao-contracts-sdk"),
+  "ts-results": require("ts-results"),
   bech32: require("bech32")
 };
 window.require = (dep) => window.depedencies[dep];
