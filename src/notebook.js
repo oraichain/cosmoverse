@@ -19,7 +19,6 @@ window.depedencies = {
 window.require = (dep) => window.depedencies[dep];
 // polyfill Buffer
 window.Buffer = require("buffer").Buffer;
-const AsyncFunction = async function () {}.constructor;
 const importReg = /import\s+(?:\*\s+as\s*)?(.*?)\s+from\s*(["'])([@\w\s\\/.-]*?)\2/g;
 window.runCodes = [];
 let promptNumber = 0;
@@ -125,7 +124,8 @@ nb.Input.prototype.render = function () {
       const outputEl = holder.nextSibling;
       const stdoutEl = outputEl.querySelector(".nb-stdout");
       try {
-        const result = await new AsyncFunction(code)();
+        originalLog(code);
+        const result = await new Function(`(async () => {${code}})()`)();
         const logStr = logs
           .map((log) => '<span style="width:100%;display:inline-block">' + json(log) + "</span>")
           .join("");

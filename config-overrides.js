@@ -1,5 +1,3 @@
-const webpack = require("webpack");
-
 module.exports = {
   webpack: function (config, env) {
     config.resolve.fallback = {
@@ -17,13 +15,9 @@ module.exports = {
       buffer: require.resolve("buffer"),
       https: require.resolve("https-browserify")
     };
-
-    config.plugins.push(
-      new webpack.ProvidePlugin({
-        Buffer: ["buffer", "Buffer"]
-      })
-    );
-
+    config.optimization = {
+      minimize: false
+    };
     return config;
   }
 };
