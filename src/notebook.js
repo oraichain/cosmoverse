@@ -117,6 +117,7 @@ nb.Input.prototype.render = function () {
       if (result !== undefined) {
         stdoutEl.innerHTML += json(result);
       }
+      run_el.innerHTML = "&check;";
     } catch (ex) {
       stdoutEl.innerHTML = json(ex.message);
     } finally {
