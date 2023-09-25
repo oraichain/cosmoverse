@@ -119,11 +119,9 @@ nb.Input.prototype.render = function () {
   runEl.innerHTML = " ❯ ";
   runCodes.push(
     (runEl.onclick = async () => {
-      const code = editor.contentDOM.innerText.replace(
-        importReg,
-        (m0, m1, m2, m3) => `const ${m1} = window.depedencies['${m3}']`
-      );
-      originalLog(code);
+      const code = editor.state.doc
+        .toString()
+        .replace(importReg, (m0, m1, m2, m3) => `const ${m1} = window.depedencies['${m3}']`);
       const outputEl = holder.nextSibling;
       const stdoutEl = outputEl.querySelector(".nb-stdout");
       try {
