@@ -6,9 +6,13 @@ import "./index.css";
 import { useEffect, useRef, useState } from "react";
 
 const options = [
-  { value: "/basic.ipynb", label: "Basic interactions" },
-  { value: "/ibc.ipynb", label: "IBC channels" }
+  { value: "basic", label: "Basic interactions" },
+  { value: "nft-marketplace", label: "NFT Marketplace" },
+  { value: "orderbook", label: "Orderbook" },
+  { value: "ibc-ics20", label: "IBC channels with ICS20" }
 ];
+
+const url = new URL(location.href);
 
 const App = () => {
   const [value, setValue] = useState();
@@ -16,7 +20,8 @@ const App = () => {
   const ref = useRef();
 
   useEffect(() => {
-    changeNotebook(options[0]);
+    const defaultOpt = options.find((opt) => opt.value === url.searchParams.get("nb").trim()) ?? options[0];
+    changeNotebook(defaultOpt);
   }, []);
 
   const runAll = async () => {
@@ -27,19 +32,22 @@ const App = () => {
     setDisabled(false);
   };
 
-  const changeNotebook = async (item) => {
-    setValue(item);
-    const json = await fetch(item.value).then((res) => res.json());
+  const changeNotebook = async (opt) => {
+    setValue(opt);
+    runCodes.length = 0;
+    const json = await fetch(`/nb/${opt.value}.ipynb`).then((res) => res.json());
     const notebook = nb.parse(json);
     ref.current.innerHTML = "";
     ref.current.appendChild(notebook.render());
+    url.searchParams.set("nb", opt.value);
+    history.pushState({}, null, url.toString());
   };
 
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <Select autosize options={options} value={value} onChange={changeNotebook} />
-        <button disabled={disabled} onClick={runAll}>
+        <button style={{ position: "fixed", right: 10, top: 10, zIndex: 9999 }} disabled={disabled} onClick={runAll}>
           Run all
         </button>
       </div>

@@ -12,6 +12,7 @@ window.depedencies = {
   "@oraichain/cosmwasm-vm-js": require("@oraichain/cosmwasm-vm-js"),
   "@cosmjs/stargate": require("@cosmjs/stargate"),
   "@oraichain/common-contracts-sdk": require("@oraichain/common-contracts-sdk"),
+  "@oraichain/oraidex-contracts-sdk": require("@oraichain/oraidex-contracts-sdk"),
   "@cosmjs/cosmwasm-stargate": require("@cosmjs/cosmwasm-stargate"),
   "@oraichain/immutable": require("@oraichain/immutable"),
   bech32: require("bech32")
@@ -121,7 +122,7 @@ nb.Input.prototype.render = function () {
     const outputEl = holder.nextSibling;
     const stdoutEl = outputEl.querySelector(".nb-stdout");
     try {
-      const result = await (1, eval)(`(async () => {${code}})()`);
+      const result = await (1, eval)(`(async () => {\n${code}\n})()`);
 
       const logStr = logs
         .map((log) => '<span style="width:100%;display:inline-block">' + json(log) + "</span>")
@@ -132,6 +133,7 @@ nb.Input.prototype.render = function () {
       }
       runEl.innerHTML = "&check;";
     } catch (ex) {
+      runEl.innerHTML = "x";
       stdoutEl.innerHTML = json(ex.message);
     } finally {
       promptNumber++;
