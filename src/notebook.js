@@ -5,15 +5,24 @@ import { basicSetup, EditorView } from "codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import json from "./json";
 import "./notebook.css";
-import * as cwSimulate from "@oraichain/cw-simulate";
-import * as stargate from "@cosmjs/stargate";
-import * as commonContractsSdk from "@oraichain/common-contracts-sdk";
-import * as cosmwasmStargate from "@cosmjs/cosmwasm-stargate";
 
-Object.assign(window, cwSimulate, stargate, commonContractsSdk, cosmwasmStargate);
-window.Buffer = require("buffer");
-window.bech32 = require("bech32");
-
+// depedencies
+window.depedencies = {
+  "@oraichain/cw-simulate": require("@oraichain/cw-simulate"),
+  "@oraichain/cosmwasm-vm-js": require("@oraichain/cosmwasm-vm-js"),
+  "@cosmjs/stargate": require("@cosmjs/stargate"),
+  "@oraichain/common-contracts-sdk": require("@oraichain/common-contracts-sdk"),
+  "@cosmjs/cosmwasm-stargate": require("@cosmjs/cosmwasm-stargate"),
+  "@oraichain/immutable": require("@oraichain/immutable"),
+  bech32: require("bech32")
+};
+window.require = (dep) => window.depedencies[dep];
+// polyfill Buffer
+window.Buffer = require("buffer").Buffer;
+const AsyncFunction = async function () {}.constructor;
+const importReg = /import\s+(?:\*\s+as\s*)?(.*?)\s+from\s*(["'])([@\w\s\\/.-]*?)\2/g;
+window.runCodes = [];
+let promptNumber = 0;
 const originalLog = console.log;
 
 const logs = [];
@@ -80,9 +89,12 @@ nb.Input.prototype.render = function () {
   var cell = this.cell;
   if (typeof cell.number === "number") {
     holder.setAttribute("data-prompt-number", this.cell.number);
+    if (this.cell.number > promptNumber) {
+      promptNumber = this.cell.number;
+    }
   }
-  var pre_el = makeElement("pre");
-  var code_el = makeElement("code");
+  var preEl = makeElement("pre");
+  var codeEl = makeElement("code");
   var notebook = cell.worksheet.notebook;
   var m = notebook.metadata;
   var lang =
@@ -90,44 +102,54 @@ nb.Input.prototype.render = function () {
     m.language ||
     (m.kernelspec && m.kernelspec.language) ||
     (m.language_info && m.language_info.name);
-  code_el.setAttribute("data-language", lang);
-  pre_el.className = "language-" + lang;
-  code_el.className = "language-" + lang;
+  codeEl.setAttribute("data-language", lang);
+  preEl.className = "language-" + lang;
+  codeEl.className = "language-" + lang;
 
   const editor = new EditorView({
     // doc: "console.log('hello')\n",
     doc: joinText(this.raw),
     extensions: [basicSetup, javascript()],
-    parent: code_el
+    parent: codeEl
   });
-  pre_el.appendChild(code_el);
+  preEl.appendChild(codeEl);
 
-  var run_el = makeElement("button");
-  run_el.className = "run-cell";
-  run_el.innerHTML = " ❯ ";
-  run_el.onclick = async () => {
-    const code = editor.contentDOM.innerText;
-    const stdoutEl = holder.nextSibling.querySelector(".nb-stdout");
-    try {
-      const result = await (1, eval)(`(async () => {${code}})()`);
-      const logStr = logs
-        .map((log) => '<span style="width:100%;display:inline-block">' + json(log) + "</span>")
-        .join("");
-      stdoutEl.innerHTML = logStr;
-      if (result !== undefined) {
-        stdoutEl.innerHTML += json(result);
+  var runEl = makeElement("button");
+  runEl.className = "run-cell";
+  runEl.innerHTML = " ❯ ";
+  runCodes.push(
+    (runEl.onclick = async () => {
+      const code = editor.contentDOM.innerText.replace(
+        importReg,
+        (m0, m1, m2, m3) => `const ${m1} = window.depedencies['${m3}']`
+      );
+      originalLog(code);
+      const outputEl = holder.nextSibling;
+      const stdoutEl = outputEl.querySelector(".nb-stdout");
+      try {
+        const result = await new AsyncFunction(code)();
+        const logStr = logs
+          .map((log) => '<span style="width:100%;display:inline-block">' + json(log) + "</span>")
+          .join("");
+        stdoutEl.innerHTML = logStr;
+        if (result !== undefined) {
+          stdoutEl.innerHTML += json(result);
+        }
+        runEl.innerHTML = "&check;";
+      } catch (ex) {
+        stdoutEl.innerHTML = json(ex.message);
+      } finally {
+        promptNumber++;
+        holder.setAttribute("data-prompt-number", promptNumber);
+        outputEl.setAttribute("data-prompt-number", promptNumber);
+        logs.length = 0;
       }
-      run_el.innerHTML = "&check;";
-    } catch (ex) {
-      stdoutEl.innerHTML = json(ex.message);
-    } finally {
-      logs.length = 0;
-    }
-  };
+    })
+  );
 
-  holder.appendChild(run_el);
+  holder.appendChild(runEl);
 
-  holder.appendChild(pre_el);
+  holder.appendChild(preEl);
   this.el = holder;
   return holder;
 };
