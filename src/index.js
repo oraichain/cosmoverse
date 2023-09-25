@@ -20,7 +20,7 @@ const App = () => {
   const ref = useRef();
 
   useEffect(() => {
-    const defaultOpt = options.find((opt) => opt.value === url.searchParams.get("nb").trim()) ?? options[0];
+    const defaultOpt = options.find((opt) => opt.value === url.searchParams.get("nb")) ?? options[0];
     changeNotebook(defaultOpt);
   }, []);
 
