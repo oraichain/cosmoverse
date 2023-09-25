@@ -109,7 +109,7 @@ nb.Input.prototype.render = function () {
     const code = editor.contentDOM.innerText;
     const stdoutEl = holder.nextSibling.querySelector(".nb-stdout");
     try {
-      const result = await eval(`(async () => {${code}})()`);
+      const result = await (1, eval)(`(async () => {${code}})()`);
       const logStr = logs
         .map((log) => '<span style="width:100%;display:inline-block">' + json(log) + "</span>")
         .join("");
@@ -119,8 +119,9 @@ nb.Input.prototype.render = function () {
       }
     } catch (ex) {
       stdoutEl.innerHTML = json(ex.message);
+    } finally {
+      logs.length = 0;
     }
-    logs.length = 0;
   };
 
   holder.appendChild(run_el);
