@@ -295,3 +295,25 @@ const ibcBalance = await cw20Contract.balance({ address: ics20Contract.contractA
 // should return initialBalance: 100000000
 ibcBalance.balance;
 ```
+
+### Compare to cosmwasm-multitest
+
+| feature                  | @oraichain/cw-simulate                       | cw-multitest |
+| ------------------------ | -------------------------------------------- | ------------ |
+| multiple contract        | Yes                                          | Yes          |
+| blockchain module        | bank, wasm, ibc                              | bank, wasm   |
+| snapshot                 | Yes                                          | No           |
+| production compatibility | compatible with `@cosmjs/cosmwasm-startgate` | Internal use |
+| forking networks         | Yes                                          | No           |
+
+### Compare to hardhat
+
+| feature                  | @oraichain/cw-simulate                  | hardhat                    |
+| ------------------------ | --------------------------------------- | -------------------------- |
+| multiple contract        | Yes                                     | Yes                        |
+| blockchain module        | bank, wasm, ibc                         | evm                        |
+| snapshot                 | Yes                                     | Yes                        |
+| production compatibility | compatible `@cosmjs/cosmwasm-startgate` | compatible `ethers.js`     |
+| forking networks         | Yes                                     | Yes                        |
+| console.log              | Using `deps.api.debug`                  | Yes                        |
+| Typescript codegen       | Using `@oraichain/cwtools`              | Using `@typechain/hardhat` |
