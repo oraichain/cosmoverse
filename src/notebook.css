@@ -99,6 +99,10 @@
     content: "Out [" attr(data-prompt-number) "]:";    
 }
 
+.nb-markdown-cell pre {
+    overflow-x: auto;
+}
+
 @media only screen and (max-width: 600px) {
     #root{
         padding-left: 25px !important;
