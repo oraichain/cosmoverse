@@ -101,20 +101,30 @@
 
 @media only screen and (max-width: 600px) {
     #root{
-        padding-left: 30px;
+        padding-left: 25px !important;
     }
     
     .nb-input:before {
-        content: "[" attr(data-prompt-number) "]:";
+        content: attr(data-prompt-number);             
+        font-size: 13px;
     }
 
     .nb-output:before {
-        content: "[" attr(data-prompt-number) "]:";
+        display: none;
     }
 
-    .cm-gutters{
+    .cm-gutters {
         display: none!important;
     }
+
+    .cm-editor {
+        border-left: 1px dotted #ccc;
+    }
+
+    .run-cell {
+        margin-left: -25px;
+    }
+
 }
 
 div[style="max-height:1000px;max-width:1500px;overflow:auto;"] {
