@@ -57,7 +57,7 @@
     min-height: 1em;
     width: 100%;
     overflow-x: scroll;
-    border-right: 1px dotted #CCC;
+    border-left: 1px dotted #ccc;
 }
 
 .nb-output img {
@@ -96,8 +96,7 @@
 }
 
 .nb-output:before {
-    content: "Out [" attr(data-prompt-number) "]:";
-    margin-top: 1em;
+    content: "Out [" attr(data-prompt-number) "]:";    
 }
 
 @media only screen and (max-width: 600px) {
@@ -112,9 +111,13 @@
     .nb-output:before {
         content: "[" attr(data-prompt-number) "]:";
     }
-    
+
     .cm-gutters{
         display: none;
+    }
+
+    .cm-scroller{
+        border-left:  dotted #ccc;
     }
 }
 
