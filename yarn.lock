@@ -1995,10 +1995,10 @@
   resolved "https://registry.yarnpkg.com/@oraichain/common-contracts-sdk/-/common-contracts-sdk-1.0.30.tgz#c932d05179c4051dc0cece6d285af2f5da7604b2"
   integrity sha512-NsEEo8tNqe/xYb0uIi9X58PTZ/Y/agJmfQtOt5WAJZWoFLynNL1ntEET+bj1NMUtk3uZaSNFiz4BZrChAy+NTg==
 
-"@oraichain/cosmwasm-vm-js@^0.2.76":
-  version "0.2.76"
-  resolved "https://registry.yarnpkg.com/@oraichain/cosmwasm-vm-js/-/cosmwasm-vm-js-0.2.76.tgz#11431450b75bba0c822be1403f0a2483c2fb1694"
-  integrity sha512-dJjFnH9pwI8ruuW3xR70eRdFY9aaJUMU6QPstox5M9O9XKmjHzKmQW9l+IIwKWb81rG1Z1C+RDdzD5bird9aCA==
+"@oraichain/cosmwasm-vm-js@^0.2.77":
+  version "0.2.77"
+  resolved "https://registry.yarnpkg.com/@oraichain/cosmwasm-vm-js/-/cosmwasm-vm-js-0.2.77.tgz#c84dafb65de90ad41c686781706d43d5660d25fc"
+  integrity sha512-jMZYOORGayJFOEx0DeZZk4sbWdV2zP+Iv+xVCZlnzX3bBXOCU3BGkysI/YWT+LWvM0B7bpZK1HCF6fYK7MI2Hw==
   dependencies:
     "@cosmjs/amino" "^0.31.0"
     "@cosmjs/crypto" "^0.31.0"
@@ -2014,17 +2014,17 @@
   resolved "https://registry.yarnpkg.com/@oraichain/cosmwasm-vm-zk-web/-/cosmwasm-vm-zk-web-0.0.2.tgz#7412c49a013b62d7b45806177437949942fe16cf"
   integrity sha512-sM1P5vZN33kn7E9f12TwzYiGl6PsUfFwuDaOxFgJU4H4bQfi4rUlGMNGLyNHQM+CJhUcUxuC4TkipqEskpHqng==
 
-"@oraichain/cw-simulate@^2.8.67":
-  version "2.8.67"
-  resolved "https://registry.yarnpkg.com/@oraichain/cw-simulate/-/cw-simulate-2.8.67.tgz#cbfe3963e5222dac361c379c7733a783b40f182b"
-  integrity sha512-JsDdAmS1ve8Wgai7ds9SzWVzhtUlDhC/DZ0nH3SJ/p7Z6ZgTLTuSgjAm+U7lxrnQY3yfpxysclm+vNQjKYVFWA==
+"@oraichain/cw-simulate@^2.8.68":
+  version "2.8.68"
+  resolved "https://registry.yarnpkg.com/@oraichain/cw-simulate/-/cw-simulate-2.8.68.tgz#1824e85b123cedbe85476709e47aa2a51dee66fd"
+  integrity sha512-F/cX6kpTbXMirGMxgYZDYnf3JYG4W8yq/j/eBg6PbMnYoyH34HrqJYt4jhpmc2fUuEwAxSSh/Svp+eT2/SR0hw==
   dependencies:
     "@cosmjs/amino" "^0.31.0"
     "@cosmjs/cosmwasm-stargate" "^0.31.0"
     "@cosmjs/crypto" "^0.31.0"
     "@cosmjs/encoding" "^0.31.0"
     "@kiruse/serde" "^0.8.0-rc.6"
-    "@oraichain/cosmwasm-vm-js" "^0.2.76"
+    "@oraichain/cosmwasm-vm-js" "^0.2.77"
     eventemitter3 "^5.0.0"
     protobufjs "^7.2.3"
     ts-results "^3.3.0"

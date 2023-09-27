@@ -10,6 +10,31 @@ import json from "./json";
 import "highlight.js/styles/default.css";
 import "./notebook.css";
 
+// depedencies
+window.depedencies = {
+  "ts-results": require("ts-results"),
+  bech32: require("bech32"),
+  "@cosmjs/stargate": require("@cosmjs/stargate"),
+  "@cosmjs/cosmwasm-stargate": require("@cosmjs/cosmwasm-stargate"),
+  "@oraichain/cw-simulate": require("@oraichain/cw-simulate"),
+  "@oraichain/cosmwasm-vm-zk-web": require("@oraichain/cosmwasm-vm-zk-web"),
+  "@oraichain/common-contracts-sdk": require("@oraichain/common-contracts-sdk"),
+  "@oraichain/oraidex-contracts-sdk": require("@oraichain/oraidex-contracts-sdk"),
+  "@oraichain/dao-contracts-sdk": require("@oraichain/dao-contracts-sdk")
+};
+window.require = (dep) => window.depedencies[dep];
+// polyfill Buffer
+window.Buffer = require("buffer").Buffer;
+const importReg = /import\s+(?:\*\s+as\s*)?(.*?)\s+from\s*(["'])([@\w\s\\/.-]*?)\2/g;
+window.runCodes = [];
+let promptNumber = 0;
+const originalLog = console.log;
+const logs = [];
+console.log = function (...value) {
+  originalLog.apply(console, value);
+  logs.push(...value);
+};
+
 // Then register the languages you need
 hljs.registerLanguage("rust", rust);
 
@@ -29,45 +54,18 @@ const md = new MarkdownIt({
   }
 });
 
-// depedencies
-window.depedencies = {
-  "@oraichain/cw-simulate": require("@oraichain/cw-simulate"),
-  "@oraichain/cosmwasm-vm-js": require("@oraichain/cosmwasm-vm-js"),
-  "@oraichain/cosmwasm-vm-zk-web": require("@oraichain/cosmwasm-vm-zk-web"),
-  "@cosmjs/stargate": require("@cosmjs/stargate"),
-  "@oraichain/common-contracts-sdk": require("@oraichain/common-contracts-sdk"),
-  "@oraichain/oraidex-contracts-sdk": require("@oraichain/oraidex-contracts-sdk"),
-  "@cosmjs/cosmwasm-stargate": require("@cosmjs/cosmwasm-stargate"),
-  "@oraichain/immutable": require("@oraichain/immutable"),
-  "@oraichain/dao-contracts-sdk": require("@oraichain/dao-contracts-sdk"),
-  "ts-results": require("ts-results"),
-  bech32: require("bech32")
-};
-window.require = (dep) => window.depedencies[dep];
-// polyfill Buffer
-window.Buffer = require("buffer").Buffer;
-const importReg = /import\s+(?:\*\s+as\s*)?(.*?)\s+from\s*(["'])([@\w\s\\/.-]*?)\2/g;
-window.runCodes = [];
-let promptNumber = 0;
-const originalLog = console.log;
-const logs = [];
-console.log = function (...value) {
-  originalLog.apply(console, value);
-  logs.push(...value);
-};
+const ansi_up = new AnsiUp();
+const VERSION = "0.7.0";
 
-var ansi_up = new AnsiUp();
-var VERSION = "0.7.0";
-
-var doc = window.document;
+const doc = window.document;
 
 // Helper functions
-var ident = function (x) {
+const ident = function (x) {
   return x;
 };
 
-var makeElement = function (tag, classNames) {
-  var el = doc.createElement(tag);
+const makeElement = function (tag, classNames) {
+  const el = doc.createElement(tag);
   el.className = (classNames || [])
     .map(function (cn) {
       return nb.prefix + cn;
@@ -76,12 +74,12 @@ var makeElement = function (tag, classNames) {
   return el;
 };
 
-var escapeHTML = function (raw) {
-  var replaced = raw.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const escapeHTML = function (raw) {
+  const replaced = raw.replace(/</g, "&lt;").replace(/>/g, "&gt;");
   return replaced;
 };
 
-var joinText = function (text) {
+const joinText = function (text) {
   if (text.join) {
     return text.map(joinText).join("");
   } else {
@@ -90,7 +88,7 @@ var joinText = function (text) {
 };
 
 // Set up `nb` namespace
-var nb = {
+const nb = {
   prefix: "nb-",
   markdown: md.render.bind(md) || ident,
   ansi: ansi_up.ansi_to_html.bind(ansi_up) || ident,
@@ -110,19 +108,19 @@ nb.Input.prototype.render = function () {
   if (!this.raw.length) {
     return makeElement("div");
   }
-  var holder = makeElement("div", ["input"]);
-  var cell = this.cell;
+  const holder = makeElement("div", ["input"]);
+  const cell = this.cell;
   if (typeof cell.number === "number") {
     holder.setAttribute("data-prompt-number", this.cell.number);
     if (this.cell.number > promptNumber) {
       promptNumber = this.cell.number;
     }
   }
-  var preEl = makeElement("pre");
-  var codeEl = makeElement("code");
-  var notebook = cell.worksheet.notebook;
-  var m = notebook.metadata;
-  var lang =
+  const preEl = makeElement("pre");
+  const codeEl = makeElement("code");
+  const notebook = cell.worksheet.notebook;
+  const m = notebook.metadata;
+  const lang =
     this.cell.raw.language ||
     m.language ||
     (m.kernelspec && m.kernelspec.language) ||
@@ -138,7 +136,7 @@ nb.Input.prototype.render = function () {
   });
   preEl.appendChild(codeEl);
 
-  var runEl = makeElement("button");
+  const runEl = makeElement("button");
   runEl.className = "run-cell";
   runEl.innerHTML = " ❯ ";
   const handler = async () => {
@@ -179,9 +177,9 @@ nb.Input.prototype.render = function () {
 };
 
 // Outputs and output-renderers
-var imageCreator = function (format) {
+const imageCreator = function (format) {
   return function (data) {
-    var el = makeElement("img", ["image-output"]);
+    const el = makeElement("img", ["image-output"]);
     el.src = "data:image/" + format + ";base64," + joinText(data).replace(/\n/g, "");
     return el;
   };
@@ -189,14 +187,14 @@ var imageCreator = function (format) {
 
 nb.display = {};
 nb.display.text = function (text) {
-  var el = makeElement("pre", ["text-output"]);
+  const el = makeElement("pre", ["text-output"]);
   el.innerHTML = nb.highlighter(nb.ansi(joinText(text)), el);
   return el;
 };
 nb.display["text/plain"] = nb.display.text;
 
 nb.display.html = function (html) {
-  var el = makeElement("div", ["html-output"]);
+  const el = makeElement("div", ["html-output"]);
   el.innerHTML = nb.sanitizer(joinText(html));
   return el;
 };
@@ -208,7 +206,7 @@ nb.display.marked = function (md) {
 nb.display["text/markdown"] = nb.display.marked;
 
 nb.display.svg = function (svg) {
-  var el = makeElement("div", ["svg-output"]);
+  const el = makeElement("div", ["svg-output"]);
   el.innerHTML = joinText(svg);
   return el;
 };
@@ -216,7 +214,7 @@ nb.display["text/svg+xml"] = nb.display.svg;
 nb.display["image/svg+xml"] = nb.display.svg;
 
 nb.display.latex = function (latex) {
-  var el = makeElement("div", ["latex-output"]);
+  const el = makeElement("div", ["latex-output"]);
   el.innerHTML = joinText(latex);
   return el;
 };
@@ -224,11 +222,11 @@ nb.display["text/latex"] = nb.display.latex;
 
 nb.display.javascript = function (js) {
   if (nb.executeJavaScript) {
-    var el = makeElement("script");
+    const el = makeElement("script");
     el.innerHTML = joinText(js);
     return el;
   } else {
-    var el = document.createElement("pre");
+    const el = document.createElement("pre");
     el.innerText = "JavaScript execution is disabled for this notebook";
     return el;
   }
@@ -259,12 +257,12 @@ nb.display_priority = [
   "text/plain"
 ];
 
-var render_display_data = function () {
-  var o = this;
-  var formats = nb.display_priority.filter(function (d) {
+const render_display_data = function () {
+  const o = this;
+  const formats = nb.display_priority.filter(function (d) {
     return o.raw.data ? o.raw.data[d] : o.raw[d];
   });
-  var format = formats[0];
+  const format = formats[0];
   if (format) {
     if (nb.display[format]) {
       return nb.display[format](o.raw[format] || o.raw.data[format]);
@@ -273,9 +271,9 @@ var render_display_data = function () {
   return makeElement("div", ["empty-output"]);
 };
 
-var render_error = function () {
-  var el = makeElement("pre", ["pyerr"]);
-  var raw = this.raw.traceback.join("\n");
+const render_error = function () {
+  const el = makeElement("pre", ["pyerr"]);
+  const raw = this.raw.traceback.join("\n");
   el.innerHTML = nb.highlighter(nb.ansi(escapeHTML(raw)), el);
   return el;
 };
@@ -293,19 +291,19 @@ nb.Output.prototype.renderers = {
   pyerr: render_error,
   error: render_error,
   stream: function () {
-    var el = makeElement("pre", [this.raw.stream || this.raw.name]);
-    var raw = joinText(this.raw.text);
+    const el = makeElement("pre", [this.raw.stream || this.raw.name]);
+    const raw = joinText(this.raw.text);
     el.innerHTML = nb.highlighter(nb.ansi(escapeHTML(raw)), el);
     return el;
   }
 };
 
 nb.Output.prototype.render = function () {
-  var outer = makeElement("div", ["output"]);
+  const outer = makeElement("div", ["output"]);
   if (typeof this.cell.number === "number") {
     outer.setAttribute("data-prompt-number", this.cell.number);
   }
-  var inner = this.renderers[this.type].call(this);
+  const inner = this.renderers[this.type].call(this);
   outer.appendChild(inner);
   this.el = outer;
   return outer;
@@ -316,8 +314,8 @@ nb.coalesceStreams = function (outputs) {
   if (!outputs.length) {
     return outputs;
   }
-  var last = outputs[0];
-  var new_outputs = [last];
+  const last = outputs[0];
+  const new_outputs = [last];
   outputs.slice(1).forEach(function (o) {
     if (
       o.raw.output_type === "stream" &&
@@ -336,18 +334,18 @@ nb.coalesceStreams = function (outputs) {
 
 // Cells
 nb.Cell = function (raw, worksheet) {
-  var cell = this;
+  const cell = this;
   cell.raw = raw;
   cell.worksheet = worksheet;
   cell.type = raw.cell_type;
   if (cell.type === "code") {
     cell.number = raw.prompt_number > -1 ? raw.prompt_number : raw.execution_count;
-    var source = raw.input || [raw.source];
+    const source = raw.input || [raw.source];
     cell.input = new nb.Input(source, cell);
     if (cell.raw.outputs.length === 0) {
       cell.raw.outputs.push({ name: "stdout", output_type: "stream", text: "" });
     }
-    var raw_outputs = cell.raw.outputs.map(function (o) {
+    const raw_outputs = cell.raw.outputs.map(function (o) {
       return new nb.Output(o, cell);
     });
     cell.outputs = nb.coalesceStreams(raw_outputs);
@@ -356,26 +354,26 @@ nb.Cell = function (raw, worksheet) {
 
 nb.Cell.prototype.renderers = {
   markdown: function () {
-    var el = makeElement("div", ["cell", "markdown-cell"]);
+    const el = makeElement("div", ["cell", "markdown-cell"]);
 
-    var joined = joinText(this.raw.source);
+    const joined = joinText(this.raw.source);
 
     el.innerHTML = nb.sanitizer(nb.markdown(joined));
 
     return el;
   },
   heading: function () {
-    var el = makeElement("h" + this.raw.level, ["cell", "heading-cell"]);
+    const el = makeElement("h" + this.raw.level, ["cell", "heading-cell"]);
     el.innerHTML = nb.sanitizer(joinText(this.raw.source));
     return el;
   },
   raw: function () {
-    var el = makeElement("div", ["cell", "raw-cell"]);
+    const el = makeElement("div", ["cell", "raw-cell"]);
     el.innerHTML = escapeHTML(joinText(this.raw.source));
     return el;
   },
   code: function () {
-    var cell_el = makeElement("div", ["cell", "code-cell"]);
+    const cell_el = makeElement("div", ["cell", "code-cell"]);
     cell_el.appendChild(this.input.render());
     this.outputs.forEach(function (o) {
       cell_el.appendChild(o.render());
@@ -385,21 +383,21 @@ nb.Cell.prototype.renderers = {
 };
 
 nb.Cell.prototype.render = function () {
-  var el = this.renderers[this.type].call(this);
+  const el = this.renderers[this.type].call(this);
   this.el = el;
   return el;
 };
 
 // Worksheets
 nb.Worksheet = function (raw, notebook) {
-  var worksheet = this;
+  const worksheet = this;
   this.raw = raw;
   this.notebook = notebook;
   this.cells = raw.cells.map(function (c) {
     return new nb.Cell(c, worksheet);
   });
   this.render = function () {
-    var worksheet_el = makeElement("div", ["worksheet"]);
+    const worksheet_el = makeElement("div", ["worksheet"]);
     worksheet.cells.forEach(function (c) {
       worksheet_el.appendChild(c.render());
     });
@@ -410,12 +408,12 @@ nb.Worksheet = function (raw, notebook) {
 
 // Notebooks
 nb.Notebook = function (raw, config) {
-  var notebook = this;
+  const notebook = this;
   this.raw = raw;
   this.config = config;
-  var meta = (this.metadata = raw.metadata || {});
+  const meta = (this.metadata = raw.metadata || {});
   this.title = meta.title || meta.name;
-  var _worksheets = raw.worksheets || [{ cells: raw.cells }];
+  const _worksheets = raw.worksheets || [{ cells: raw.cells }];
   this.worksheets = _worksheets.map(function (ws) {
     return new nb.Worksheet(ws, notebook);
   });
@@ -423,7 +421,7 @@ nb.Notebook = function (raw, config) {
 };
 
 nb.Notebook.prototype.render = function () {
-  var notebook_el = makeElement("div", ["notebook"]);
+  const notebook_el = makeElement("div", ["notebook"]);
 
   this.worksheets.forEach(function (w) {
     notebook_el.appendChild(w.render());
