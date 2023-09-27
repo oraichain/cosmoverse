@@ -113,11 +113,7 @@
     }
 
     .cm-gutters{
-        display: none;
-    }
-
-    .cm-scroller{
-        border-left:  dotted #ccc;
+        display: none!important;
     }
 }
 
