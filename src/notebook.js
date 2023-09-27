@@ -1,15 +1,39 @@
-import { parse } from "marked";
+import hljs from "highlight.js/lib/core";
+import rust from "highlight.js/lib/languages/rust";
+import MarkdownIt from "markdown-it";
 import { AnsiUp } from "ansi_up";
 import { sanitize } from "dompurify";
 import { basicSetup, EditorView } from "codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import json from "./json";
+
+import "highlight.js/styles/default.css";
 import "./notebook.css";
+
+// Then register the languages you need
+hljs.registerLanguage("rust", rust);
+
+const md = new MarkdownIt({
+  highlight: function (str, lang) {
+    if (lang && hljs.getLanguage(lang)) {
+      try {
+        const format = hljs.highlight(str, { language: lang }).value;
+        originalLog(format);
+        return format;
+      } catch (ex) {
+        originalLog(ex);
+      }
+    }
+
+    return ""; // use external default escaping
+  }
+});
 
 // depedencies
 window.depedencies = {
   "@oraichain/cw-simulate": require("@oraichain/cw-simulate"),
   "@oraichain/cosmwasm-vm-js": require("@oraichain/cosmwasm-vm-js"),
+  "@oraichain/cosmwasm-vm-zk-web": require("@oraichain/cosmwasm-vm-zk-web"),
   "@cosmjs/stargate": require("@cosmjs/stargate"),
   "@oraichain/common-contracts-sdk": require("@oraichain/common-contracts-sdk"),
   "@oraichain/oraidex-contracts-sdk": require("@oraichain/oraidex-contracts-sdk"),
@@ -68,7 +92,7 @@ var joinText = function (text) {
 // Set up `nb` namespace
 var nb = {
   prefix: "nb-",
-  markdown: parse || ident,
+  markdown: md.render.bind(md) || ident,
   ansi: ansi_up.ansi_to_html.bind(ansi_up) || ident,
   sanitizer: sanitize || ident,
   executeJavaScript: true,
@@ -109,7 +133,7 @@ nb.Input.prototype.render = function () {
 
   const editor = new EditorView({
     doc: joinText(this.raw),
-    extensions: [basicSetup, javascript()],
+    extensions: [basicSetup, javascript({ typescript: true })],
     parent: codeEl
   });
   preEl.appendChild(codeEl);
@@ -120,7 +144,7 @@ nb.Input.prototype.render = function () {
   const handler = async () => {
     const code = editor.state.doc
       .toString()
-      .replace(importReg, (m0, m1, m2, m3) => `const ${m1} = window.depedencies['${m3}']`);
+      .replace(importReg, (m0, m1, m2, m3) => `const ${m1.replaceAll(" as ", ":")} = window.depedencies['${m3}']`);
     const outputEl = holder.nextSibling;
     const stdoutEl = outputEl.querySelector(".nb-stdout");
     try {

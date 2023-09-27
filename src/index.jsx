@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 const options = [
   { value: "basic", label: "Basic interactions" },
+  { value: "zk", label: "Zero-knowledge VM" },
   { value: "dao", label: "Interchain DAO" },
   { value: "orderbook", label: "Orderbook" },
   { value: "ibc-ics20", label: "IBC channels with ICS20" }
