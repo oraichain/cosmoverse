@@ -112,6 +112,10 @@
     .nb-output:before {
         content: "[" attr(data-prompt-number) "]:";
     }
+    
+    .cm-gutters{
+        display: none;
+    }
 }
 
 div[style="max-height:1000px;max-width:1500px;overflow:auto;"] {
