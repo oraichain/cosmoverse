@@ -110,7 +110,7 @@
     
     .nb-input:before {
         content: attr(data-prompt-number);             
-        font-size: 13px;
+        font-weight:bold;
     }
 
     .nb-output:before {
