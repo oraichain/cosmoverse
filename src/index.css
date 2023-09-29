@@ -8,7 +8,7 @@ button {
     display:inline-block;
     padding:0.3em 1.2em;
     margin:0 0.1em 0.1em 0;    
-    border-radius:2em;
+    border-radius:4px;
     box-sizing: border-box;
     text-decoration:none;
     color: #222;
@@ -17,6 +17,18 @@ button {
     text-shadow: 0 0.04em 0.04em rgba(0,0,0,0.35);
     text-align:center;
     transition: all 0.2s;
+}
+
+button.selected {
+    background-color: #7664E4;    
+    color: #F6F7FB;
+}
+
+button.runall { 
+    position: fixed;
+    right: 10px;
+    top: 10px;
+    z-index: 9999;
 }
 
 button:hover{

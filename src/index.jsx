@@ -1,5 +1,4 @@
 import { createRoot } from "react-dom/client";
-import Select from "react-select";
 
 import nb from "./notebook";
 import "./index.css";
@@ -21,7 +20,7 @@ const App = () => {
 
   useEffect(() => {
     const defaultOpt = options.find((opt) => opt.value === url.searchParams.get("nb")) ?? options[0];
-    changeNotebook(defaultOpt);
+    changeNotebook(defaultOpt.value);
   }, []);
 
   const runAll = async () => {
@@ -32,22 +31,32 @@ const App = () => {
     setDisabled(false);
   };
 
-  const changeNotebook = async (opt) => {
-    setValue(opt);
+  const changeNotebook = async (value) => {
+    setValue(value);
     runCodes.length = 0;
-    const json = await fetch(`/nb/${opt.value}.ipynb`).then((res) => res.json());
+    const json = await fetch(`/nb/${value}.ipynb`).then((res) => res.json());
     const notebook = nb.parse(json);
     ref.current.innerHTML = "";
     ref.current.appendChild(notebook.render());
-    url.searchParams.set("nb", opt.value);
+    url.searchParams.set("nb", value);
     history.pushState({}, null, url.toString());
   };
 
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <Select autosize options={options} value={value} onChange={changeNotebook} />
-        <button style={{ position: "fixed", right: 10, top: 10, zIndex: 9999 }} disabled={disabled} onClick={runAll}>
+        <div>
+          {options.map((opt, ind) => (
+            <button
+              className={value === opt.value ? "selected" : ""}
+              key={opt.value}
+              onClick={() => changeNotebook(opt.value)}
+            >
+              {ind + 1}.{opt.label}
+            </button>
+          ))}
+        </div>
+        <button className="selected runall" disabled={disabled} onClick={runAll}>
           Run all
         </button>
       </div>
