@@ -42,9 +42,7 @@ const md = new MarkdownIt({
   highlight: function (str, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
-        const format = hljs.highlight(str, { language: lang }).value;
-        originalLog(format);
-        return format;
+        return hljs.highlight(str, { language: lang }).value;
       } catch (ex) {
         originalLog(ex);
       }
