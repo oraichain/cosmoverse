@@ -117,9 +117,18 @@
     overflow-x: auto;
 }
 
+@media only screen and (max-width: 1300px) {
+    .nb-list {
+        flex-direction: row;    
+        flex-wrap: wrap;
+        position: static;
+    }
+}
+
 @media only screen and (max-width: 600px) {
     #root{
         padding-left: 25px !important;
+        padding-bottom: 30px;
     }
     
     .nb-input:before {
@@ -146,17 +155,7 @@
     .runall {
         top: auto !important;
         bottom: 10px;
-    }
-
-    .nb-list {
-        flex-direction: row;    
-        flex-wrap: wrap;
-        position: static;
-    }
-
-    #root {
-        padding-bottom: 30px;
-    }
+    }   
 }
 
 div[style="max-height:1000px;max-width:1500px;overflow:auto;"] {
