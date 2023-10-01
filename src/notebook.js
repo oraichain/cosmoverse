@@ -13,7 +13,7 @@ const logs = [];
 
 const sandboxFrame = document.getElementById("sandboxFrame").contentWindow;
 
-sandboxFrame.console.log = function (...value) {
+console.log = sandboxFrame.console.log = function (...value) {
   logs.push(...value);
 };
 
