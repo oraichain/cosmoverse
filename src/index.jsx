@@ -31,6 +31,7 @@ const App = () => {
 
   const changeNotebook = async (value) => {
     setValue(value);
+    window.scrollTo(0, 0);
     url.searchParams.set("nb", value);
     history.pushState({}, null, url.toString());
     const notebook = await nb.fetch(value);
@@ -43,22 +44,21 @@ const App = () => {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div>
-          {options.map((opt, ind) => (
-            <button
-              className={value === opt.value ? "selected" : ""}
-              key={opt.value}
-              onClick={() => changeNotebook(opt.value)}
-            >
-              {ind + 1}.{opt.label}
-            </button>
-          ))}
-        </div>
-        <button className="selected runall" disabled={disabled} onClick={runAll}>
-          Run all
-        </button>
+      <div className="nb-list">
+        {options.map((opt, ind) => (
+          <button
+            className={value === opt.value ? "selected" : ""}
+            key={opt.value}
+            onClick={() => changeNotebook(opt.value)}
+          >
+            {ind + 1}.{opt.label}
+          </button>
+        ))}
       </div>
+      <button className="selected runall" disabled={disabled} onClick={runAll}>
+        Run all
+      </button>
+
       <div ref={ref} />
     </div>
   );

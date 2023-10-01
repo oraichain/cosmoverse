@@ -2,6 +2,15 @@
     line-height: 1.5;
 }
 
+.nb-list {
+    display: flex;    
+    flex-direction: column;
+    z-index: 9999;
+    position: fixed;
+    left: 10px;
+    top: 10px;
+}
+
 .nb-stdout,
 .nb-stderr {
     white-space: pre-wrap;
@@ -134,6 +143,20 @@
         margin-left: -25px;
     }
 
+    .runall {
+        top: auto !important;
+        bottom: 10px;
+    }
+
+    .nb-list {
+        flex-direction: row;    
+        flex-wrap: wrap;
+        position: static;
+    }
+
+    #root {
+        padding-bottom: 30px;
+    }
 }
 
 div[style="max-height:1000px;max-width:1500px;overflow:auto;"] {
