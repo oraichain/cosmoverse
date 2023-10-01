@@ -53,6 +53,10 @@
     margin: .5em 0;
 }
 
+.nb-input {
+    min-height: 5em;
+}
+
 .nb-output {
     min-height: 1em;
     width: 100%;

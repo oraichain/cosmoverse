@@ -25,21 +25,20 @@ const App = () => {
 
   const runAll = async () => {
     setDisabled(true);
-    for (const run of runCodes) {
-      await run();
-    }
+    await nb.runAll();
     setDisabled(false);
   };
 
   const changeNotebook = async (value) => {
     setValue(value);
-    runCodes.length = 0;
-    const json = await fetch(`/nb/${value}.ipynb`).then((res) => res.json());
-    const notebook = nb.parse(json);
-    ref.current.innerHTML = "";
-    ref.current.appendChild(notebook.render());
     url.searchParams.set("nb", value);
     history.pushState({}, null, url.toString());
+    const notebook = await nb.fetch(value);
+    if (ref.current.lastElementChild) {
+      ref.current.replaceChild(notebook.render(), ref.current.lastElementChild);
+    } else {
+      ref.current.appendChild(notebook.render());
+    }
   };
 
   return (

@@ -9,9 +9,16 @@ import json from "./json";
 
 import "highlight.js/styles/default.css";
 import "./notebook.css";
+const logs = [];
+
+const sandboxFrame = document.getElementById("sandboxFrame").contentWindow;
+
+sandboxFrame.console.log = function (...value) {
+  logs.push(...value);
+};
 
 // depedencies
-window.depedencies = {
+sandboxFrame.depedencies = {
   "ts-results": require("ts-results"),
   bech32: require("bech32"),
   "@cosmjs/stargate": require("@cosmjs/stargate"),
@@ -22,18 +29,15 @@ window.depedencies = {
   "@oraichain/oraidex-contracts-sdk": require("@oraichain/oraidex-contracts-sdk"),
   "@oraichain/dao-contracts-sdk": require("@oraichain/dao-contracts-sdk")
 };
-window.require = (dep) => window.depedencies[dep];
+sandboxFrame.require = (dep) => sandboxFrame.depedencies[dep];
+
 // polyfill Buffer
 window.Buffer = require("buffer").Buffer;
+
+// processing code
 const importReg = /import\s+(?:\*\s+as\s*)?(.*?)\s+from\s*(["'])([@\w\s\\/.-]*?)\2/g;
-window.runCodes = [];
+const runCodes = [];
 let promptNumber = 0;
-const originalLog = console.log;
-const logs = [];
-console.log = function (...value) {
-  originalLog.apply(console, value);
-  logs.push(...value);
-};
 
 // Then register the languages you need
 hljs.registerLanguage("rust", rust);
@@ -144,8 +148,7 @@ nb.Input.prototype.render = function () {
     const outputEl = holder.nextSibling;
     const stdoutEl = outputEl.querySelector(".nb-stdout");
     try {
-      const result = await (1, eval)(`(async () => {\n${code}\n})()`);
-
+      const result = await (1, sandboxFrame.eval)(`(async () => {\n${code}\n})()`);
       const logStr = logs
         .map((log) => '<span style="width:100%;display:inline-block">' + json(log) + "</span>")
         .join("");
@@ -430,6 +433,19 @@ nb.Notebook.prototype.render = function () {
 
 nb.parse = function (nbjson, config) {
   return new nb.Notebook(nbjson, config);
+};
+
+nb.runAll = async function () {
+  for (const run of runCodes) {
+    await run();
+  }
+};
+
+nb.fetch = async function (value) {
+  runCodes.length = 0;
+  const json = await fetch(`/nb/${value}.ipynb`).then((res) => res.json());
+  const notebook = nb.parse(json);
+  return notebook;
 };
 
 export default nb;
