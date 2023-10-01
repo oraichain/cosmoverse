@@ -42,7 +42,7 @@
 }
 
 .nb-cell {
-    position: relative;
+    position: relative;    
 }
 
 .nb-raw-cell {
@@ -93,6 +93,7 @@
     height: 20px;
     text-align: center;
     width: 20px;
+    border-radius: 10px;
 }
 
 .nb-input:before {

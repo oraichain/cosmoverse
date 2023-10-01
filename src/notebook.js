@@ -147,6 +147,8 @@ nb.Input.prototype.render = function () {
       .replace(importReg, (m0, m1, m2, m3) => `const ${m1.replaceAll(" as ", ":")} = window.depedencies['${m3}']`);
     const outputEl = holder.nextSibling;
     const stdoutEl = outputEl.querySelector(".nb-stdout");
+    runEl.innerHTML = "";
+    runEl.classList.add("loading");
     try {
       const result = await (1, sandboxFrame.eval)(`(async () => {\n${code}\n})()`);
       const logStr = logs
@@ -161,6 +163,7 @@ nb.Input.prototype.render = function () {
       runEl.innerHTML = "x";
       stdoutEl.innerHTML = json(ex.message);
     } finally {
+      runEl.classList.remove("loading");
       promptNumber++;
       holder.setAttribute("data-prompt-number", promptNumber);
       outputEl.setAttribute("data-prompt-number", promptNumber);
