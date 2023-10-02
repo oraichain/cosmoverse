@@ -14,7 +14,7 @@
 .nb-stdout,
 .nb-stderr {
     white-space: pre-wrap;
-    margin: 1em 0;
+    margin: 0.1em 0;
     padding: 0.1em 0.5em;
 }
 

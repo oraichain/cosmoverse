@@ -146,14 +146,16 @@ nb.Input.prototype.render = function () {
       .toString()
       .replace(importReg, (m0, m1, m2, m3) => `const ${m1.replaceAll(" as ", ":")} = window.depedencies['${m3}']`);
     const outputEl = holder.nextSibling;
-    const stdoutEl = outputEl.querySelector(".nb-stdout");
+    const stdoutEl = outputEl.lastElementChild;
     runEl.innerHTML = "";
     runEl.classList.add("loading");
+    const start = performance.now();
     try {
       const result = await (1, sandboxFrame.eval)(`(async () => {\n${code}\n})()`);
       const logStr = logs
         .map((log) => '<span style="width:100%;display:inline-block">' + json(log) + "</span>")
         .join("");
+      stdoutEl.className = "nb-stdout";
       stdoutEl.innerHTML = logStr;
       if (result !== undefined) {
         stdoutEl.innerHTML += json(result);
@@ -161,6 +163,7 @@ nb.Input.prototype.render = function () {
       runEl.innerHTML = "&check;";
     } catch (ex) {
       runEl.innerHTML = "x";
+      stdoutEl.className = "nb-stderr";
       stdoutEl.innerHTML = json(ex.message);
     } finally {
       runEl.classList.remove("loading");
@@ -168,6 +171,9 @@ nb.Input.prototype.render = function () {
       holder.setAttribute("data-prompt-number", promptNumber);
       outputEl.setAttribute("data-prompt-number", promptNumber);
       logs.length = 0;
+      stdoutEl.innerHTML += json(
+        `${stdoutEl.innerHTML.length ? "\n" : ""}Took ${Number((performance.now() - start).toFixed(2))} ms`
+      );
     }
   };
   runCodes.push(handler);
