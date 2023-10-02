@@ -1,12 +1,9 @@
 import { SimulateCosmWasmClient, DownloadState } from "@oraichain/cw-simulate";
 import { OraiswapLimitOrderClient } from "@oraichain/oraidex-contracts-sdk";
-import path from "path";
 import { fileURLToPath } from "url";
+import path from "path";
 
-const downloadState = new DownloadState(
-  process.env.LCD,
-  path.join(path.dirname(fileURLToPath(import.meta.url)), "data")
-);
+const downloadState = new DownloadState(process.env.LCD, path.dirname(fileURLToPath(import.meta.url)) + "/data");
 
 const senderAddress = "orai14vcw5qk0tdvknpa38wz46js5g7vrvut8lk0lk6";
 const client = new SimulateCosmWasmClient({
@@ -43,6 +40,7 @@ const client = new SimulateCosmWasmClient({
   console.log(await client.queryContractSmart(storages.implementation, { offering: { get_offerings: { limit: 1 } } }));
 
   const orderbookContract = new OraiswapLimitOrderClient(client, senderAddress, storages.orderbook);
+  const start = performance.now();
   const ret = await orderbookContract.orders({
     filter: { bidder: "orai1g4s5qdw54wdj6ggukfdr59j4uv82asczunxpj7" },
     assetInfos: [
@@ -57,5 +55,5 @@ const client = new SimulateCosmWasmClient({
     ]
   });
   console.dir(ret, { depth: null });
-  console.log(process.memoryUsage().rss >> 16, "MB");
+  console.log("Search took", performance.now() - start, "ms");
 })();
