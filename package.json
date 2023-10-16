@@ -11,7 +11,7 @@
     "@oraichain/common-contracts-build": "^1.0.32",
     "@oraichain/common-contracts-sdk": "^1.0.30",
     "@oraichain/cosmwasm-vm-zk-web": "^0.0.2",
-    "@oraichain/cw-simulate": "^2.8.68",
+    "@oraichain/cw-simulate": "^2.8.71",
     "@oraichain/dao-contracts-sdk": "^1.0.4",
     "@oraichain/oraidex-contracts-build": "^1.0.14",
     "@oraichain/oraidex-contracts-sdk": "^1.0.22",
