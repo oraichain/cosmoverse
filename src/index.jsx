@@ -8,7 +8,8 @@ const options = [
   { value: "basic", label: "Basic interactions" },
   { value: "dao", label: "Interchain DAO" },
   { value: "orderbook", label: "Orderbook" },
-  { value: "ibc-ics20", label: "IBC channels with ICS20" }
+  { value: "ibc-ics20", label: "IBC channels with ICS20" },
+  { value: "oraix", label: "ORAIX Token" }
 ];
 
 const url = new URL(location.href);
