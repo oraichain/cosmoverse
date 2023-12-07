@@ -24,7 +24,7 @@ sandboxFrame.depedencies = {
   "@cosmjs/stargate": require("@cosmjs/stargate"),
   "@cosmjs/cosmwasm-stargate": require("@cosmjs/cosmwasm-stargate"),
   "@oraichain/cw-simulate": require("@oraichain/cw-simulate"),
-  "@oraichain/cosmwasm-vm-zk-web": require("@oraichain/cosmwasm-vm-zk-web"),
+  "@oraichain/cosmwasm-vm-zk": require("@oraichain/cosmwasm-vm-zk"),
   "@oraichain/common-contracts-sdk": require("@oraichain/common-contracts-sdk"),
   "@oraichain/oraidex-contracts-sdk": require("@oraichain/oraidex-contracts-sdk"),
   "@oraichain/dao-contracts-sdk": require("@oraichain/dao-contracts-sdk")
