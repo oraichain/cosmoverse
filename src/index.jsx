@@ -1,8 +1,23 @@
 import { createRoot } from "react-dom/client";
 
-import nb from "./notebook";
+import nb from "@oraichain/notebookjs";
 import "./index.css";
 import { useEffect, useRef, useState } from "react";
+
+// polyfill Buffer
+window.Buffer = require("buffer").Buffer;
+
+nb.updateDepedencies({
+  "ts-results": require("ts-results"),
+  bech32: require("bech32"),
+  "@cosmjs/stargate": require("@cosmjs/stargate"),
+  "@cosmjs/cosmwasm-stargate": require("@cosmjs/cosmwasm-stargate"),
+  "@oraichain/cw-simulate": require("@oraichain/cw-simulate"),
+  "@oraichain/cosmwasm-vm-zk": require("@oraichain/cosmwasm-vm-zk"),
+  "@oraichain/common-contracts-sdk": require("@oraichain/common-contracts-sdk"),
+  "@oraichain/oraidex-contracts-sdk": require("@oraichain/oraidex-contracts-sdk"),
+  "@oraichain/dao-contracts-sdk": require("@oraichain/dao-contracts-sdk")
+});
 
 const options = [
   { value: "basic", label: "Basic interactions" },

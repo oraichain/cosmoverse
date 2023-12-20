@@ -15,15 +15,7 @@
     "@oraichain/dao-contracts-sdk": "^1.0.4",
     "@oraichain/oraidex-contracts-build": "^1.0.14",
     "@oraichain/oraidex-contracts-sdk": "^1.0.22",
-    "ansi_up": "^6.0.2",
-    "codemirror": "^6.0.1",
-    "dompurify": "^3.0.5",
-    "dotenv": "^16.0.3",
-    "highlight.js": "^11.8.0",
-    "markdown-it": "^13.0.2",
-    "notebookjs": "^0.6.7",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "@oraichain/notebookjs": "^0.1.2"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
