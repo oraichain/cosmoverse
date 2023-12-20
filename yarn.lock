@@ -1942,20 +1942,16 @@
   resolved "https://registry.yarnpkg.com/@oraichain/immutable/-/immutable-4.3.9.tgz#ff8d5a7b39b5b01f3f72a902cffbfea32ccb20c3"
   integrity sha512-INpHnhL970OCkR7I71Kssb2aLl2l4Y/x8W6FlyRO0KmC8GHjxc/hlNB1t44BiI7lkOYmcWMRQoC8dwParsp1RQ==
 
-"@oraichain/notebookjs@^0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@oraichain/notebookjs/-/notebookjs-0.1.2.tgz#bca661333bf1c5cb335ef36f111f190e85bbab1f"
-  integrity sha512-WbsN8tWUEh96SFwt3NIz9Q1Gf0+fqURenZ7zLpMV8Rxg/UuavQ7akUvzJWLWTExAelyHyvTWy3IAsAzVfQvprA==
+"@oraichain/notebookjs@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@oraichain/notebookjs/-/notebookjs-0.1.5.tgz#bf96928c237eb0dbf3fcd3c807324d6c75dc7fa1"
+  integrity sha512-3TLyN7YXdlXm4ZURkFxEet0vjn9TFwXGzsnpnt7gAadZNGKvx/Am5GcWce/Yl9+u8naBlMIEBBGlYKlvkL1/0Q==
   dependencies:
     ansi_up "^6.0.2"
     codemirror "^6.0.1"
     dompurify "^3.0.5"
-    dotenv "^16.0.3"
     highlight.js "^11.8.0"
     markdown-it "^13.0.2"
-    notebookjs "^0.6.7"
-    react "^18.2.0"
-    react-dom "^18.2.0"
     table "^6.8.1"
 
 "@oraichain/oraidex-contracts-build@^1.0.14":
@@ -2928,11 +2924,6 @@ ansi-styles@^5.0.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-5.2.0.tgz#07449690ad45777d1924ac2abb2fc8895dba836b"
   integrity sha512-Cxwpt2SfTzTtXcfOlzGEee8O+c+MmUgGrNiBcXnuWxuFJHe6a5Hz7qwhwe5OgaSYI0IJvkLqWX1ASG+cJOkEiA==
-
-ansi_up@^5.0.1:
-  version "5.2.1"
-  resolved "https://registry.yarnpkg.com/ansi_up/-/ansi_up-5.2.1.tgz#9437082c7ad4975c15ec57d30a6b55da295bee36"
-  integrity sha512-5bz5T/7FRmlxA37zDXhG6cAwlcZtfnmNLDJra66EEIT3kYlw5aPJdbkJEhm59D6kA4Wi5ict6u6IDYHJaQlH+g==
 
 ansi_up@^6.0.2:
   version "6.0.2"
@@ -4410,11 +4401,6 @@ domhandler@^4.0.0, domhandler@^4.2.0, domhandler@^4.3.1:
   dependencies:
     domelementtype "^2.2.0"
 
-dompurify@^2.2.9:
-  version "2.4.7"
-  resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-2.4.7.tgz#277adeb40a2c84be2d42a8bcd45f582bfa4d0cfc"
-  integrity sha512-kxxKlPEDa6Nc5WJi+qRgPbOAbgTpSULL+vI3NUXsZMlkJxTqYI9wg5ZTay2sFrdZRWHPWNi+EdAhcJf81WtoMQ==
-
 dompurify@^3.0.5:
   version "3.0.5"
   resolved "https://registry.yarnpkg.com/dompurify/-/dompurify-3.0.5.tgz#eb3d9cfa10037b6e73f32c586682c4b2ab01fbed"
@@ -4454,11 +4440,6 @@ dotenv@^10.0.0:
   version "10.0.0"
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-10.0.0.tgz#3d4227b8fb95f81096cdd2b66653fb2c7085ba81"
   integrity sha512-rlBi9d8jpv9Sf1klPjNfFAuWDjKLwTIJJ/VxtoTwIR6hnZxcEOQCZg2oIL3MWBYw5GpUDKOEnND7LXTbIpQ03Q==
-
-dotenv@^16.0.3:
-  version "16.3.1"
-  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.3.1.tgz#369034de7d7e5b120972693352a3bf112172cc3e"
-  integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
 
 duplexer@^0.1.2:
   version "0.1.2"
@@ -7029,11 +7010,6 @@ markdown-it@^13.0.2:
     mdurl "^1.0.1"
     uc.micro "^1.0.5"
 
-marked@^4.0.10:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/marked/-/marked-4.3.0.tgz#796362821b019f734054582038b116481b456cf3"
-  integrity sha512-PRsaiG84bK+AMvxziE/lCFss8juXjNaWzVbN5tXAm4XjeaS9NAHhop+PjQxz2A9h8Q4M/xGmzP8vqNwy6JeK0A==
-
 md5.js@^1.3.4:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/md5.js/-/md5.js-1.3.5.tgz#b5d07b8e3216e3e27cd728d72f70d1e6a342005f"
@@ -7275,16 +7251,6 @@ normalize-url@^6.0.1:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/normalize-url/-/normalize-url-6.1.0.tgz#40d0885b535deffe3f3147bec877d05fe4c5668a"
   integrity sha512-DlL+XwOy3NxAQ8xuC0okPgK46iuVNAK01YN7RueYBqqFeGsBjV9XmCAzAdgt+667bCl5kPh9EqKKDwnaPG1I7A==
-
-notebookjs@^0.6.7:
-  version "0.6.7"
-  resolved "https://registry.yarnpkg.com/notebookjs/-/notebookjs-0.6.7.tgz#58d94e87b87c83fb693c8a715bd5c3e42ce40fc1"
-  integrity sha512-4hlDNSfPLVSh5LwGSMN1EXsNEbQN+9NM04MfMwxxmo5rnS3P8AK+7Hka7PAPDVls2ZLfvdEL5NXfL1tNXUc6jg==
-  dependencies:
-    ansi_up "^5.0.1"
-    dompurify "^2.2.9"
-    jsdom "^16.6.0"
-    marked "^4.0.10"
 
 npm-run-path@^4.0.1:
   version "4.0.1"
